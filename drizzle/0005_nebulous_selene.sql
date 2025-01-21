@@ -1,0 +1,1 @@
+ALTER TABLE `users` MODIFY COLUMN `o_auth_id` bigint unsigned;

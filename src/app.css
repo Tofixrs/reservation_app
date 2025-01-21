@@ -1,0 +1,46 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+	:root {
+		--text: #07271a;
+		--background: #f7fdfa;
+		--primary: #177248;
+		--secondary: #7bb5e5;
+		--accent: #2450b7;
+	}
+	.light {
+		--text: #07271a;
+		--background: #f7fdfa;
+		--primary: #177248;
+		--secondary: #7bb5e5;
+		--accent: #2450b7;
+	}
+	.dark {
+			--text: #d9f8eb;
+			--background: #020906;
+			--primary: #8de8bd;
+			--secondary: #1a5584;
+			--accent: #4874db;
+	}
+
+	@media (prefers-color-scheme: dark ) {
+		:root {
+			--text: #d9f8eb;
+			--background: #020906;
+			--primary: #8de8bd;
+			--secondary: #1a5584;
+			--accent: #4874db;
+		}
+	}
+}
+
+a {
+	text-decoration: underline;
+	color: var(--primary);
+}
+
+button {
+	cursor: pointer;
+}

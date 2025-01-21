@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1737325651461,
+      "tag": "0000_polite_mentallo",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1737386477999,
+      "tag": "0001_quick_oracle",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1737386595764,
+      "tag": "0002_funny_dracula",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1737448452384,
+      "tag": "0003_complete_rumiko_fujikawa",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1737452536411,
+      "tag": "0004_silky_dreaming_celestial",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1737487020008,
+      "tag": "0005_nebulous_selene",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1737490858596,
+      "tag": "0006_colorful_husk",
+      "breakpoints": true
+    }
+  ]
+}
