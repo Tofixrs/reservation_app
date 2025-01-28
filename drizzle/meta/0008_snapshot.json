@@ -1,9 +1,62 @@
 {
 	"version": "5",
 	"dialect": "mysql",
-	"id": "dc00f546-8d45-4ffc-8915-062e6607e0dd",
-	"prevId": "bc697e37-ef07-4529-8b65-1515be8763da",
+	"id": "ed9e9d1d-b9e7-4514-b561-3af41e72d59e",
+	"prevId": "9ac2e786-43a6-4bf3-a3b2-c573ac7ae7a3",
 	"tables": {
+		"email_verification": {
+			"name": "email_verification",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "int",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": true
+				},
+				"userId": {
+					"name": "userId",
+					"type": "int",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"code": {
+					"name": "code",
+					"type": "char(10)",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"expires_at": {
+					"name": "expires_at",
+					"type": "datetime",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"email_verification_userId_users_id_fk": {
+					"name": "email_verification_userId_users_id_fk",
+					"tableFrom": "email_verification",
+					"tableTo": "users",
+					"columnsFrom": ["userId"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {
+				"email_verification_id": {
+					"name": "email_verification_id",
+					"columns": ["id"]
+				}
+			},
+			"uniqueConstraints": {},
+			"checkConstraint": {}
+		},
 		"reservations": {
 			"name": "reservations",
 			"columns": {
@@ -182,6 +235,13 @@
 				"provider": {
 					"name": "provider",
 					"type": "tinyint",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"email_verified": {
+					"name": "email_verified",
+					"type": "boolean",
 					"primaryKey": false,
 					"notNull": true,
 					"autoincrement": false

@@ -39,13 +39,13 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		}
 	});
 	const githubUser = await githubUserResponse.json();
-	const githubUserId = githubUser.id as number;
+	const githubUserId = githubUser.id.toString();
 
 	const res = await fetch('https://api.github.com/user/emails', {
 		headers: { Authorization: `token ${tokens.accessToken()}` }
 	});
-	const emails: { primary: number; email: string }[] = await res.json();
-	const email = emails.sort((a, b) => b.primary - a.primary)[0].email;
+	const emails: { primary: number; email: string; verified: false }[] = await res.json();
+	const email = emails.sort((a, b) => b.primary - a.primary).find((email) => email.verified)!.email;
 
 	const existingUser = await db.query.users.findFirst({
 		where: or(
@@ -69,7 +69,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		});
 	}
 
-	const user = await createUser(Provider.Github, email, undefined, githubUserId);
+	const user = await createUser(Provider.Github, email, undefined, githubUserId, true);
 
 	if (!user) return error(500);
 

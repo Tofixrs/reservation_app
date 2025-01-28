@@ -1,8 +1,8 @@
 import { Provider } from '../../provider';
 import { relations, sql, type InferSelectModel } from 'drizzle-orm';
 import {
-    bigint,
-	check,
+	boolean,
+	char,
 	datetime,
 	int,
 	mysqlTable,
@@ -11,24 +11,14 @@ import {
 	varchar
 } from 'drizzle-orm/mysql-core';
 
-export const users = mysqlTable(
-	'users',
-	{
-		id: int('id').primaryKey().notNull().autoincrement(),
-		email: varchar('email', { length: 255 }).notNull(),
-		password: varchar('password', { length: 255 }),
-		OAuthId:varchar("o_auth_id", {length: 255}),
-		provider: tinyint('provider').notNull().$type<Provider>()
-	},
-	(t) => [
-		{
-			credentialsProvider: check(
-				'credents_provider',
-				sql`(${t.provider} == ${Provider.Credentials} AND ${t.password} IS NOT NULL AND ${t.OAuthId} IS NULL) OR (${t.provider} != ${Provider.Credentials}) AND ${t.OAuthId} IS NOT NULL AND $${t.password} IS NULL `
-			)
-		}
-	]
-);
+export const users = mysqlTable('users', {
+	id: int('id').primaryKey().notNull().autoincrement(),
+	email: varchar('email', { length: 255 }).notNull(),
+	password: varchar('password', { length: 255 }),
+	OAuthId: varchar('o_auth_id', { length: 255 }),
+	provider: tinyint('provider').notNull().$type<Provider>(),
+	emailVerified: boolean('email_verified').notNull().default(false)
+});
 
 export const usersRelations = relations(users, ({ many, one }) => ({
 	reservations: many(reservations),
@@ -78,7 +68,24 @@ export const sessionRelations = relations(sessions, ({ one }) => ({
 	})
 }));
 
+export const emailVerification = mysqlTable('email_verification', {
+	id: int('id').primaryKey().notNull().autoincrement(),
+	userId: int('userId')
+		.references(() => users.id, { onDelete: 'cascade' })
+		.notNull(),
+	code: char('code', { length: 8 }).notNull(),
+	expiresAt: datetime('expires_at').notNull()
+});
+
+export const emailVerificationRelations = relations(emailVerification, ({ one }) => ({
+	user: one(users, {
+		fields: [emailVerification.userId],
+		references: [users.id]
+	})
+}));
+
 export type UserDB = InferSelectModel<typeof users>;
-export type User = Omit<UserDB, 'password' | 'provider'>;
+export type User = Omit<UserDB, 'password'>;
 
 export type Session = InferSelectModel<typeof sessions>;
+export type EmailVerification = InferSelectModel<typeof emailVerification>;

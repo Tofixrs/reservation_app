@@ -16,8 +16,6 @@ export const actions = {
 			where: eq(users.email, email)
 		});
 		if (user == undefined) return fail(400, { wrongCredentials: true });
-		if (user.provider != Provider.Credentials) return fail(400, { wrongProvider: true });
-
 		if (!(await verify(user.password!, password))) return fail(400, { wrongCredentials: true });
 
 		const sessionToken = generateSessionToken();

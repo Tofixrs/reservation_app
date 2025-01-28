@@ -29,7 +29,7 @@
 		<a href="/" class="text-text no-underline">Hello</a>
 	</div>
 	<div class="flex flex-grow flex-row-reverse">
-		<a href="./login" class="text-text no-underline">
+		<a href="/account" class="text-text no-underline">
 			<Account size={'36'} />
 		</a>
 		<button onclick={() => (darkMode = !darkMode)}>

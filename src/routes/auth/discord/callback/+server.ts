@@ -1,13 +1,13 @@
-import type { OAuth2Tokens } from "arctic";
-import type { RequestEvent } from "./$types";
-import { discord } from "$lib/server/oauth";
-import { db } from "$lib/server/db";
-import { and, eq, or } from "drizzle-orm";
-import { users } from "$lib/server/db/schema";
-import { Provider } from "$lib/provider";
-import { error } from "@sveltejs/kit";
-import { createSession, generateSessionToken, setSessionTokenCookie } from "$lib/server/session";
-import { createUser } from "$lib/server/user";
+import type { OAuth2Tokens } from 'arctic';
+import type { RequestEvent } from './$types';
+import { discord } from '$lib/server/oauth';
+import { db } from '$lib/server/db';
+import { and, eq, or } from 'drizzle-orm';
+import { users } from '$lib/server/db/schema';
+import { Provider } from '$lib/provider';
+import { error } from '@sveltejs/kit';
+import { createSession, generateSessionToken, setSessionTokenCookie } from '$lib/server/session';
+import { createUser } from '$lib/server/user';
 
 export async function GET(event: RequestEvent): Promise<Response> {
 	const code = event.url.searchParams.get('code');
@@ -35,7 +35,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		});
 	}
 
-	const response = await fetch("https://discord.com/api/users/@me", {
+	const response = await fetch('https://discord.com/api/users/@me', {
 		headers: {
 			Authorization: `Bearer ${(tokens.data as any).access_token}`
 		}
@@ -52,7 +52,6 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	if (existingUser?.provider != Provider.Discord && existingUser != null)
 		error(400, 'Account with this email already exists');
 
-
 	if (existingUser) {
 		const sessionToken = generateSessionToken();
 		const session = await createSession(sessionToken, existingUser.id);
@@ -65,9 +64,9 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		});
 	}
 
-	const user = await createUser(Provider.Discord, email, undefined, discordUser.id);
+	const user = await createUser(Provider.Discord, email, undefined, discordUser.id, true);
 
-	if (!user) return error(500, "Couldnt create user");
+	if (!user) return error(500, 'Couldnt create user');
 
 	const sessionToken = generateSessionToken();
 	const session = await createSession(sessionToken, user.id);
@@ -79,5 +78,4 @@ export async function GET(event: RequestEvent): Promise<Response> {
 			Location: '/'
 		}
 	});
-
 }

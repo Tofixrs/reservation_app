@@ -6,15 +6,20 @@ export async function createUser(
 	provider: Provider,
 	email: string,
 	password?: string,
-	OAuthId?: string
+	OAuthId?: string,
+	emailVerified?: boolean
 ) {
 	try {
-		const u = await db.insert(users).values({ email, password, provider, OAuthId }).$returningId();
+		const u = await db
+			.insert(users)
+			.values({ email, password, provider, OAuthId, emailVerified })
+			.$returningId();
 
 		const user: User = {
 			email: email,
 			id: u[0].id,
-			OAuthId: OAuthId == undefined ? null : OAuthId
+			OAuthId: OAuthId == undefined ? null : OAuthId,
+			emailVerified: emailVerified ?? false
 		};
 		return user;
 	} catch (e) {

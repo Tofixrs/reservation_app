@@ -18,14 +18,14 @@
 		--accent: #2450b7;
 	}
 	.dark {
-			--text: #d9f8eb;
-			--background: #020906;
-			--primary: #8de8bd;
-			--secondary: #1a5584;
-			--accent: #4874db;
+		--text: #d9f8eb;
+		--background: #020906;
+		--primary: #8de8bd;
+		--secondary: #1a5584;
+		--accent: #4874db;
 	}
 
-	@media (prefers-color-scheme: dark ) {
+	@media (prefers-color-scheme: dark) {
 		:root {
 			--text: #d9f8eb;
 			--background: #020906;
@@ -41,6 +41,7 @@ a {
 	color: var(--primary);
 }
 
-button {
+button,
+input[type='submit'] {
 	cursor: pointer;
 }

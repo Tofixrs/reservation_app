@@ -9,9 +9,18 @@ export async function validateSessionToken(token: string) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 
 	const [row] = await db
-		.select()
+		.select({
+			userID: users.id,
+			sessionID: sessions.id,
+			sessionExpire: sessions.expiresAt,
+			email: users.email,
+			emailVerified: users.emailVerified,
+			provider: users.provider,
+			OAuthId: users.OAuthId
+		})
 		.from(sessions)
 		.leftJoin(users, eq(sessions.userId, users.id))
+		.where(eq(sessions.id, sessionId))
 		.limit(1);
 
 	if (!row) {
@@ -19,15 +28,17 @@ export async function validateSessionToken(token: string) {
 	}
 
 	const session: Session = {
-		id: row.sessions.id,
-		userId: row.sessions.userId,
-		expiresAt: row.sessions.expiresAt
+		id: row.sessionID,
+		userId: row.userID!,
+		expiresAt: row.sessionExpire
 	};
 
 	const user: User = {
-		id: row!.users!.id,
-		email: row!.users!.email,
-		OAuthId: row!.users!.OAuthId
+		id: row.userID!,
+		email: row.email!,
+		OAuthId: row.OAuthId!,
+		emailVerified: row.emailVerified!,
+		provider: row.provider!
 	};
 
 	if (Date.now() >= session.expiresAt.getTime()) {
