@@ -10,12 +10,12 @@
 		<h1>Login</h1>
 		<form method="POST" action="?/login" class="flex flex-col gap-1">
 			<div><label for="email">Email</label></div>
-			<div class="flex flex-grow">
+			<div class="flex grow">
 				<input
 					type="email"
 					name="email"
 					id="email"
-					class="flex-grow rounded-2xl border-2 border-text bg-background px-5 py-2"
+					class="grow rounded-2xl border-2 border-text bg-background px-5 py-2"
 				/>
 			</div>
 			<div><label for="email">Password</label></div>
@@ -24,7 +24,7 @@
 					type="password"
 					name="password"
 					id="password"
-					class="flex-grow rounded-2xl border-2 border-text bg-background px-5 py-2"
+					class="grow rounded-2xl border-2 border-text bg-background px-5 py-2"
 				/>
 			</div>
 			<div>

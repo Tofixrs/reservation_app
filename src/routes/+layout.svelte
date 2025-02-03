@@ -24,11 +24,11 @@
 </script>
 
 <header class="flex rounded-b-md border-b-2 border-gray-300 px-[5%] py-2 text-center text-3xl">
-	<div class="flex-grow"></div>
-	<div class="flex-grow justify-center">
+	<div class="grow"></div>
+	<div class="grow justify-center">
 		<a href="/" class="text-text no-underline">Hello</a>
 	</div>
-	<div class="flex flex-grow flex-row-reverse">
+	<div class="flex grow flex-row-reverse">
 		<a href="/account" class="text-text no-underline">
 			<Account size={'36'} />
 		</a>

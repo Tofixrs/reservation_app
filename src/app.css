@@ -1,6 +1,14 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import 'tailwindcss';
+
+@custom-variant dark (@media (prefers-color-scheme: dark) {&:not(.light *)},&:is(.dark *));
+
+@theme {
+	--color-text: var(--text);
+	--color-background: var(--background);
+	--color-primary: var(--primary);
+	--color-secondary: var(--secondary);
+	--color-accent: var(--accent);
+}
 
 @layer base {
 	:root {
@@ -34,14 +42,22 @@
 			--accent: #4874db;
 		}
 	}
-}
 
-a {
-	text-decoration: underline;
-	color: var(--primary);
-}
+	a {
+		text-decoration: underline;
+		color: var(--primary);
+	}
 
-button,
-input[type='submit'] {
-	cursor: pointer;
+	button,
+	input[type='submit'] {
+		cursor: pointer;
+	}
+
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		border-color: var(--color-gray-200, currentColor);
+	}
 }
