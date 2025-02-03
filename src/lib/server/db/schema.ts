@@ -1,11 +1,12 @@
 import { Provider } from '../../provider';
-import { relations, sql, type InferSelectModel } from 'drizzle-orm';
+import { relations, type InferSelectModel } from 'drizzle-orm';
 import {
 	boolean,
 	char,
 	datetime,
 	int,
 	mysqlTable,
+	text,
 	timestamp,
 	tinyint,
 	varchar
@@ -17,7 +18,8 @@ export const users = mysqlTable('users', {
 	password: varchar('password', { length: 255 }),
 	OAuthId: varchar('o_auth_id', { length: 255 }),
 	provider: tinyint('provider').notNull().$type<Provider>(),
-	emailVerified: boolean('email_verified').notNull().default(false)
+	emailVerified: boolean('email_verified').notNull().default(false),
+	admin: boolean('admin').notNull().default(false)
 });
 
 export const usersRelations = relations(users, ({ many, one }) => ({
@@ -27,7 +29,8 @@ export const usersRelations = relations(users, ({ many, one }) => ({
 
 export const rooms = mysqlTable('rooms', {
 	id: int('id').primaryKey().notNull().autoincrement(),
-	size: tinyint('size').notNull()
+	size: tinyint('size').notNull(),
+	description: text('description').notNull()
 });
 
 export const reservations = mysqlTable('reservations', {

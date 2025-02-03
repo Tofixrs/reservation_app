@@ -6,7 +6,6 @@ import { emailVerification, sessions, users } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { deleteSessionTokenCookie } from '$lib/server/session';
 import { verify } from '@node-rs/argon2';
-import { Provider } from '$lib/provider';
 import { hashPassword } from '$lib/server/password';
 import {
 	createEmailVerificationRequest,
