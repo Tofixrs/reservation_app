@@ -6,15 +6,22 @@
 	let { children } = $props();
 	let darkMode = $state<boolean | undefined>();
 	$effect(() => {
+		const root = document.querySelector(':root')!;
 		if (darkMode == undefined) return;
-		document.body.classList.toggle('dark', darkMode);
-		document.body.classList.toggle('light', !darkMode);
-		localStorage.setItem('theme', `${darkMode}`);
+		root.classList.toggle('dark', darkMode);
+		root.classList.toggle('light', !darkMode);
+
+		const darkModeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+		if (darkModeMedia.matches == darkMode) {
+			localStorage.removeItem('darkMode');
+		} else {
+			localStorage.setItem('darkMode', `${darkMode}`);
+		}
 	});
 
 	$effect.pre(() => {
 		const darkModeMedia = window.matchMedia('(prefers-color-scheme: dark)');
-		const storedTheme = localStorage.getItem('theme');
+		const storedTheme = localStorage.getItem('darkMode');
 		if (!storedTheme) {
 			darkMode = darkModeMedia.matches;
 		} else {

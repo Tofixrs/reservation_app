@@ -16,7 +16,8 @@ export async function validateSessionToken(token: string) {
 			email: users.email,
 			emailVerified: users.emailVerified,
 			provider: users.provider,
-			OAuthId: users.OAuthId
+			OAuthId: users.OAuthId,
+			admin: users.admin
 		})
 		.from(sessions)
 		.leftJoin(users, eq(sessions.userId, users.id))
@@ -38,7 +39,8 @@ export async function validateSessionToken(token: string) {
 		email: row.email!,
 		OAuthId: row.OAuthId!,
 		emailVerified: row.emailVerified!,
-		provider: row.provider!
+		provider: row.provider!,
+		admin: row.admin ?? false
 	};
 
 	if (Date.now() >= session.expiresAt.getTime()) {

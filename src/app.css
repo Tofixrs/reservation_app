@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+@import 'uploadthing/tw/v4';
+@source "../node_modules/@uploadthing/svelte/dist/";
 
 @custom-variant dark (@media (prefers-color-scheme: dark) {&:not(.light *)},&:is(.dark *));
 
@@ -11,28 +13,6 @@
 }
 
 @layer base {
-	:root {
-		--text: #07271a;
-		--background: #f7fdfa;
-		--primary: #177248;
-		--secondary: #7bb5e5;
-		--accent: #2450b7;
-	}
-	.light {
-		--text: #07271a;
-		--background: #f7fdfa;
-		--primary: #177248;
-		--secondary: #7bb5e5;
-		--accent: #2450b7;
-	}
-	.dark {
-		--text: #d9f8eb;
-		--background: #020906;
-		--primary: #8de8bd;
-		--secondary: #1a5584;
-		--accent: #4874db;
-	}
-
 	@media (prefers-color-scheme: dark) {
 		:root {
 			--text: #d9f8eb;
@@ -40,6 +20,15 @@
 			--primary: #8de8bd;
 			--secondary: #1a5584;
 			--accent: #4874db;
+		}
+	}
+	@media (prefers-color-scheme: light) {
+		:root {
+			--text: #07271a;
+			--background: #f7fdfa;
+			--primary: #177248;
+			--secondary: #7bb5e5;
+			--accent: #2450b7;
 		}
 	}
 
@@ -60,4 +49,19 @@
 	::file-selector-button {
 		border-color: var(--color-gray-200, currentColor);
 	}
+}
+
+:root.light {
+	--text: #07271a;
+	--background: #f7fdfa;
+	--primary: #177248;
+	--secondary: #7bb5e5;
+	--accent: #2450b7;
+}
+:root.dark {
+	--text: #d9f8eb;
+	--background: #020906;
+	--primary: #8de8bd;
+	--secondary: #1a5584;
+	--accent: #4874db;
 }
