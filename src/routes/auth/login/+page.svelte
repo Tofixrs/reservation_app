@@ -15,7 +15,7 @@
 					type="email"
 					name="email"
 					id="email"
-					class="grow rounded-2xl border-2 border-text bg-background px-5 py-2"
+					class="border-text bg-background grow rounded-2xl border-2 px-5 py-2"
 				/>
 			</div>
 			<div><label for="email">Password</label></div>
@@ -24,22 +24,19 @@
 					type="password"
 					name="password"
 					id="password"
-					class="grow rounded-2xl border-2 border-text bg-background px-5 py-2"
+					class="border-text bg-background grow rounded-2xl border-2 px-5 py-2"
 				/>
 			</div>
 			<div>
 				<input
 					type="submit"
 					value="Sign in"
-					class="rounded-xl border-2 border-text px-5 py-2 transition-colors hover:border-primary hover:text-primary"
+					class="border-text hover:border-primary hover:text-primary rounded-xl border-2 px-5 py-2 transition-colors"
 				/>
 			</div>
 			<div class="text-red-500">
 				{#if form?.wrongCredentials}
 					Wrong credentials
-				{/if}
-				{#if form?.wrongProvider}
-					This email was used with another provider
 				{/if}
 			</div>
 		</form>

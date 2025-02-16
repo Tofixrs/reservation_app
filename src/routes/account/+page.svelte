@@ -1,9 +1,8 @@
 <script lang="ts">
 	import Input from '$lib/client/components/input.svelte';
-	import { Provider } from '$lib/provider';
 	import type { PageProps } from './$types';
 
-	const { form, data }: PageProps = $props();
+	const { form }: PageProps = $props();
 	let password = $state('');
 	let passwordFocus = $state(false);
 	let confirmPassword = $state('');
@@ -101,14 +100,11 @@
 		<input
 			type="submit"
 			value="Change password"
-			class="rounded-xl border-2 border-text px-5 py-2 transition-colors hover:border-primary hover:text-primary"
+			class="border-text hover:border-primary hover:text-primary rounded-xl border-2 px-5 py-2 transition-colors"
 		/>
 	</div>
 	{#if form?.invalidPass}
 		Current password is invalid
-	{/if}
-	{#if form?.wrongProvider}
-		Cant change password on accounts logged from other providers
 	{/if}
 </form>
 <div>
@@ -120,7 +116,7 @@
 			<input
 				type="submit"
 				value="Send code"
-				class="rounded-xl border-2 border-text px-5 py-2 transition-colors hover:border-primary hover:text-primary"
+				class="border-text hover:border-primary hover:text-primary rounded-xl border-2 px-5 py-2 transition-colors"
 			/>
 		</form>
 	{:else}
@@ -132,20 +128,20 @@
 			<input
 				type="submit"
 				value="Send code"
-				class="rounded-xl border-2 border-text px-5 py-2 transition-colors hover:border-primary hover:text-primary"
+				class="border-text hover:border-primary hover:text-primary rounded-xl border-2 px-5 py-2 transition-colors"
 			/>
 		</form>
 		<p>Verification code has been sent to your email</p>
 	{/if}
 </div>
 
-<hr class="my-5 h-[1px] border-none bg-text" />
+<hr class="bg-text my-5 h-[1px] border-none" />
 <form action="?/logout" method="POST">
 	<div>
 		<input
 			type="submit"
 			value="Sign out"
-			class="rounded-xl border-2 border-text px-5 py-2 transition-colors hover:border-primary hover:text-primary"
+			class="border-text hover:border-primary hover:text-primary rounded-xl border-2 px-5 py-2 transition-colors"
 		/>
 	</div>
 </form>

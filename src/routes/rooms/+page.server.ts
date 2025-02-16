@@ -1,13 +1,11 @@
-import { redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from '../account/$types';
 import { db } from '$lib/server/db';
+import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async (event) => {
-	if (event.locals.user === null) {
-		return redirect(303, '/auth/login');
-	}
-	if (!event.locals.user.emailVerified) return redirect(303, '/auth/verify-email');
-
-	const rooms = await db.query.rooms.findMany();
-	return { rooms };
+export const load: PageServerLoad = async (ev) => {
+	const roomsWithImages = await db.query.rooms.findMany({
+		with: {
+			roomImageKeys: true
+		}
+	});
+	return { rooms: roomsWithImages };
 };

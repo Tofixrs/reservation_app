@@ -13,13 +13,15 @@ export async function createUser(
 		const u = await db
 			.insert(users)
 			.values({ email, password, provider, OAuthId, emailVerified })
-			.$returningId();
+			.returning();
 
 		const user: User = {
 			email: email,
 			id: u[0].id,
 			OAuthId: OAuthId == undefined ? null : OAuthId,
-			emailVerified: emailVerified ?? false
+			emailVerified: emailVerified ?? false,
+			provider,
+			admin: false
 		};
 		return user;
 	} catch (e) {

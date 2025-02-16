@@ -1,1 +1,0 @@
-ALTER TABLE `rooms` ADD `images_path` varchar(255) NOT NULL;

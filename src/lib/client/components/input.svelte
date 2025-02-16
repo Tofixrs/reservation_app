@@ -7,6 +7,8 @@
 		focus?: boolean;
 		valid?: string;
 		required?: boolean;
+		min?: number;
+		max?: number;
 	}
 	let input: HTMLInputElement | undefined = $state();
 	let {
@@ -16,7 +18,9 @@
 		value = $bindable(),
 		focus = $bindable(),
 		valid = '',
-		required = true
+		required = true,
+		min,
+		max
 	}: Props = $props();
 	$effect(() => {
 		if (!input) return;
@@ -29,9 +33,11 @@
 	{type}
 	{name}
 	{id}
-	class="grow rounded-2xl border-2 border-text bg-background px-5 py-2 [&:user-invalid]:border-red-500"
+	class="border-text bg-background grow rounded-2xl border-2 px-5 py-2 [&:user-invalid]:border-red-500"
 	onfocus={() => (focus = true)}
 	onblur={() => (focus = false)}
+	{min}
+	{max}
 	bind:this={input}
 	bind:value
 	{required}

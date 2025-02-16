@@ -1,1 +1,0 @@
-ALTER TABLE `sessions` ADD PRIMARY KEY(`id`);

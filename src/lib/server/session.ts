@@ -8,39 +8,31 @@ import type { Cookies, RequestEvent } from '@sveltejs/kit';
 export async function validateSessionToken(token: string) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 
-	const [row] = await db
-		.select({
-			userID: users.id,
-			sessionID: sessions.id,
-			sessionExpire: sessions.expiresAt,
-			email: users.email,
-			emailVerified: users.emailVerified,
-			provider: users.provider,
-			OAuthId: users.OAuthId,
-			admin: users.admin
-		})
-		.from(sessions)
-		.leftJoin(users, eq(sessions.userId, users.id))
-		.where(eq(sessions.id, sessionId))
-		.limit(1);
+	const sessionDB = await db.query.sessions.findFirst({
+		with: {
+			user: true
+		},
+		where: eq(sessions.id, sessionId)
+	});
 
-	if (!row) {
+	if (!sessionDB) {
 		return { session: null, user: null };
 	}
 
 	const session: Session = {
-		id: row.sessionID,
-		userId: row.userID!,
-		expiresAt: row.sessionExpire
+		id: sessionDB.id,
+		userId: sessionDB.userId,
+		expiresAt: sessionDB.expiresAt
 	};
 
 	const user: User = {
-		id: row.userID!,
-		email: row.email!,
-		OAuthId: row.OAuthId!,
-		emailVerified: row.emailVerified!,
-		provider: row.provider!,
-		admin: row.admin ?? false
+		id: sessionDB.user.id!,
+		email: sessionDB.user.email!,
+		OAuthId: sessionDB.user.OAuthId!,
+		emailVerified: sessionDB.user.emailVerified!,
+		provider: sessionDB.user.provider!,
+		admin: sessionDB.user.admin ?? false,
+		changingEmail: sessionDB.user.changingEmail
 	};
 
 	if (Date.now() >= session.expiresAt.getTime()) {

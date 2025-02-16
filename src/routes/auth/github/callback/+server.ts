@@ -55,7 +55,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	});
 
 	if (existingUser?.provider != Provider.Github && existingUser != null)
-		error(400, 'Account with this email already exists');
+		return error(400, 'Account with this email already exists');
 
 	if (existingUser) {
 		const sessionToken = generateSessionToken();

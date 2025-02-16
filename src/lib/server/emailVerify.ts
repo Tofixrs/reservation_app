@@ -26,7 +26,7 @@ export async function createEmailVerificationRequest(
 			expiresAt,
 			code
 		})
-		.$returningId();
+		.returning();
 
 	if (!id) {
 		return null;
@@ -41,7 +41,7 @@ export async function createEmailVerificationRequest(
 	return request;
 }
 
-export async function sendVerificationEmail(email: string, code: string) {
+export function sendVerificationEmail(email: string, code: string) {
 	return mailer.sendMail({
 		subject: 'Verication code for reservation app',
 		to: email,

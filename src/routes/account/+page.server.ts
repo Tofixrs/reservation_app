@@ -88,7 +88,7 @@ export const actions: Actions = {
 			}
 		});
 		if (!user) {
-			return error(500);
+			return fail(500, { serverError: true });
 		}
 		if (user?.password == null || !verify(user.password, passwordForm)) {
 			return fail(400, { invalidPass: true });
@@ -96,7 +96,7 @@ export const actions: Actions = {
 
 		const emailVerificationRequest = await createEmailVerificationRequest(event.locals.user.id);
 		if (!emailVerificationRequest) {
-			return error(500);
+			return fail(500, { serverError: true });
 		}
 		await sendVerificationEmail(event.locals.user.email, emailVerificationRequest.code);
 		setEmailVerificationRequestCookie(event, emailVerificationRequest, 'email_change_verification');
@@ -126,16 +126,14 @@ export const actions: Actions = {
 		if (dbCode.code != code) {
 			return fail(400, { invalid: true });
 		}
-
-		await db.update(users).set({ email, emailVerified: false });
-		await db.delete(emailVerification).where(eq(emailVerification.id, Number(verificationId)));
-		deleteEmailVerificationRequestCookie(event);
-
 		const emailVerificationRequest = await createEmailVerificationRequest(event.locals.user.id);
 		if (!emailVerificationRequest) {
 			return error(500);
 		}
 		await sendVerificationEmail(email, emailVerificationRequest.code);
 		setEmailVerificationRequestCookie(event, emailVerificationRequest);
+		await db.update(users).set({ email, emailVerified: false }).where(eq(users.id, dbCode.userId));
+
+		return redirect(303, '/auth/verify-email');
 	}
 };

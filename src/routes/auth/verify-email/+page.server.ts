@@ -8,14 +8,18 @@ import {
 } from '$lib/server/emailVerify';
 import { error, fail, redirect, type Actions } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
+import type { PageServerLoad } from './$types';
+export const load: PageServerLoad = async (event) => {
+	return { changingEmail: event.locals.user?.changingEmail };
+};
 
 export const actions: Actions = {
 	verifyEmail: async (event) => {
 		if (event.locals.user === null) {
-			return redirect(303, '/auth/login');
+			return redirect(401, '/auth/login');
 		}
 		if (event.locals.user.emailVerified) {
-			return redirect(303, '/');
+			return redirect(400, '/');
 		}
 		const data = await event.request.formData();
 		const code = data.get('verificationCode');
@@ -49,9 +53,30 @@ export const actions: Actions = {
 		}
 
 		await db.update(users).set({ emailVerified: true });
-		await db.delete(emailVerification).where(eq(emailVerification.id, Number(verificationId)))
+		await db.delete(emailVerification).where(eq(emailVerification.id, Number(verificationId)));
 		deleteEmailVerificationRequestCookie(event);
 
 		redirect(303, '/');
+	},
+	changeRequestedEmail: async (event) => {
+		if (event.locals.user === null) {
+			return redirect(402, '/auth/login');
+		}
+		if (event.locals.user.emailVerified) {
+			return redirect(400, '/');
+		}
+
+		const data = await event.request.formData();
+		const email = data.get('email') as string;
+
+		await db.update(users).set({ email }).where(eq(users.id, event.locals.user.id));
+		const emailVerificationRequest = await createEmailVerificationRequest(event.locals.user.id);
+		if (!emailVerificationRequest) {
+			return error(500);
+		}
+		await sendVerificationEmail(email, emailVerificationRequest.code);
+		setEmailVerificationRequestCookie(event, emailVerificationRequest);
+
+		return { newEmail: true };
 	}
 };

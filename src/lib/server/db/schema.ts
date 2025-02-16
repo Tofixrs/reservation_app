@@ -1,25 +1,25 @@
-import { Provider } from '../../provider';
-import { relations, type InferSelectModel } from 'drizzle-orm';
 import {
+	pgTable,
+	varchar,
+	smallint,
 	boolean,
 	char,
-	datetime,
-	int,
-	mysqlTable,
-	text,
 	timestamp,
-	tinyint,
-	varchar
-} from 'drizzle-orm/mysql-core';
+	serial,
+	text
+} from 'drizzle-orm/pg-core';
+import { Provider } from '../../provider';
+import { relations, type InferSelectModel } from 'drizzle-orm';
 
-export const users = mysqlTable('users', {
-	id: int('id').primaryKey().notNull().autoincrement(),
+export const users = pgTable('users', {
+	id: serial('id').primaryKey(),
 	email: varchar('email', { length: 255 }).notNull(),
 	password: varchar('password', { length: 255 }),
 	OAuthId: varchar('o_auth_id', { length: 255 }),
-	provider: tinyint('provider').notNull().$type<Provider>(),
+	provider: smallint('provider').notNull().$type<Provider>(),
 	emailVerified: boolean('email_verified').notNull().default(false),
-	admin: boolean('admin').notNull().default(false)
+	admin: boolean('admin').notNull().default(false),
+	changingEmail: boolean('changing_email').notNull().default(false)
 });
 
 export const usersRelations = relations(users, ({ many, one }) => ({
@@ -27,18 +27,37 @@ export const usersRelations = relations(users, ({ many, one }) => ({
 	session: one(sessions)
 }));
 
-export const rooms = mysqlTable('rooms', {
-	id: int('id').primaryKey().notNull().autoincrement(),
-	size: tinyint('size').notNull(),
-	description: text('description').notNull()
+export const rooms = pgTable('rooms', {
+	id: serial('id').primaryKey(),
+	size: smallint('size').notNull(),
+	description: text('description').notNull(),
+	name: varchar('name', { length: 50 }).notNull()
 });
 
-export const reservations = mysqlTable('reservations', {
-	id: int('id').primaryKey().notNull().autoincrement(),
-	userId: int('userId')
+export const roomRelations = relations(rooms, ({ many }) => ({
+	roomImageKeys: many(roomImageKeys)
+}));
+
+export const roomImageKeys = pgTable('room_image_keys', {
+	imageKey: text('image_key').notNull(),
+	roomID: serial('roomID')
+		.notNull()
+		.references(() => rooms.id, { onDelete: 'cascade' })
+});
+
+export const roomImageKeyRelations = relations(roomImageKeys, ({ one }) => ({
+	room: one(rooms, {
+		fields: [roomImageKeys.roomID],
+		references: [rooms.id]
+	})
+}));
+
+export const reservations = pgTable('reservations', {
+	id: serial('id').primaryKey(),
+	userId: serial('userId')
 		.references(() => users.id, { onDelete: 'cascade' })
 		.notNull(),
-	roomId: int('roomId')
+	roomId: serial('roomId')
 		.references(() => rooms.id, { onDelete: 'cascade' })
 		.notNull(),
 	timeOfArrival: timestamp('time_of_arrival').notNull(),
@@ -56,12 +75,12 @@ export const reservationsRelations = relations(reservations, ({ one }) => ({
 	})
 }));
 
-export const sessions = mysqlTable('sessions', {
+export const sessions = pgTable('sessions', {
 	id: varchar('id', { length: 255 }).notNull().primaryKey(),
-	userId: int('userId')
+	userId: serial('userId')
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
-	expiresAt: datetime('expires_at', { mode: 'date' }).notNull()
+	expiresAt: timestamp('expires_at', { mode: 'date' }).notNull()
 });
 
 export const sessionRelations = relations(sessions, ({ one }) => ({
@@ -71,13 +90,13 @@ export const sessionRelations = relations(sessions, ({ one }) => ({
 	})
 }));
 
-export const emailVerification = mysqlTable('email_verification', {
-	id: int('id').primaryKey().notNull().autoincrement(),
-	userId: int('userId')
+export const emailVerification = pgTable('email_verification', {
+	id: serial('id').primaryKey(),
+	userId: serial('userId')
 		.references(() => users.id, { onDelete: 'cascade' })
 		.notNull(),
 	code: char('code', { length: 8 }).notNull(),
-	expiresAt: datetime('expires_at').notNull()
+	expiresAt: timestamp('expires_at').notNull()
 });
 
 export const emailVerificationRelations = relations(emailVerification, ({ one }) => ({
