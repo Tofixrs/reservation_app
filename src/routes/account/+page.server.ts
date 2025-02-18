@@ -131,6 +131,7 @@ export const actions: Actions = {
 			return error(500);
 		}
 		await sendVerificationEmail(email, emailVerificationRequest.code);
+		deleteEmailVerificationRequestCookie(event, 'email_change_verification');
 		setEmailVerificationRequestCookie(event, emailVerificationRequest);
 		await db.update(users).set({ email, emailVerified: false }).where(eq(users.id, dbCode.userId));
 

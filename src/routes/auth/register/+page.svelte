@@ -1,8 +1,8 @@
 <script lang="ts">
-	import ArrowOutward from 'svelte-google-materialdesign-icons/Arrow_outward.svelte';
 	import type { PageProps } from './$types';
 	import AuthButton from '$lib/client/components/authButton.svelte';
 	import Input from '$lib/client/components/input.svelte';
+	import Button from '$lib/client/components/button.svelte';
 
 	let password = $state('');
 	let passwordFocus = $state(false);
@@ -108,11 +108,7 @@
 				{/if}
 			</div>
 			<div>
-				<input
-					type="submit"
-					value="Sign up"
-					class="rounded-xl border-2 border-text px-5 py-2 transition-colors hover:border-primary hover:text-primary"
-				/>
+				<Button>Sign up</Button>
 			</div>
 		</form>
 

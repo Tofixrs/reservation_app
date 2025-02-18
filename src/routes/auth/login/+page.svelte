@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
 	import AuthButton from '$lib/client/components/authButton.svelte';
+	import Button from '$lib/client/components/button.svelte';
 
 	let { form }: PageProps = $props();
 </script>
@@ -28,11 +29,7 @@
 				/>
 			</div>
 			<div>
-				<input
-					type="submit"
-					value="Sign in"
-					class="border-text hover:border-primary hover:text-primary rounded-xl border-2 px-5 py-2 transition-colors"
-				/>
+				<Button>Sign in</Button>
 			</div>
 			<div class="text-red-500">
 				{#if form?.wrongCredentials}

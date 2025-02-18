@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from '$lib/client/components/button.svelte';
 	import Input from '$lib/client/components/input.svelte';
 	import type { PageProps } from './$types';
 
@@ -97,11 +98,7 @@
 	</div>
 
 	<div>
-		<input
-			type="submit"
-			value="Change password"
-			class="border-text hover:border-primary hover:text-primary rounded-xl border-2 px-5 py-2 transition-colors"
-		/>
+		<Button>Change password</Button>
 	</div>
 	{#if form?.invalidPass}
 		Current password is invalid
@@ -113,11 +110,7 @@
 		<form action="?/sendEmailChangeCode" method="POST">
 			<div><label for="passwordCode">Password</label></div>
 			<Input id="codePassword" name="codePassword" type="password" required />
-			<input
-				type="submit"
-				value="Send code"
-				class="border-text hover:border-primary hover:text-primary rounded-xl border-2 px-5 py-2 transition-colors"
-			/>
+			<Button>Send code</Button>
 		</form>
 	{:else}
 		<form action="?/changeEmail" method="POST">
@@ -125,11 +118,7 @@
 			<Input id="changeEmailCode" name="changeEmailCode" type="text" required />
 			<div><label for="newEmail">New Email:</label></div>
 			<Input id="New Email" name="newEmail" type="text" required />
-			<input
-				type="submit"
-				value="Send code"
-				class="border-text hover:border-primary hover:text-primary rounded-xl border-2 px-5 py-2 transition-colors"
-			/>
+			<Button>Send code</Button>
 		</form>
 		<p>Verification code has been sent to your email</p>
 	{/if}
@@ -138,10 +127,6 @@
 <hr class="bg-text my-5 h-[1px] border-none" />
 <form action="?/logout" method="POST">
 	<div>
-		<input
-			type="submit"
-			value="Sign out"
-			class="border-text hover:border-primary hover:text-primary rounded-xl border-2 px-5 py-2 transition-colors"
-		/>
+		<Button>Sign out</Button>
 	</div>
 </form>
