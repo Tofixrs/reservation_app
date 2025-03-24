@@ -5,7 +5,7 @@ import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async (event) => {
-	const room = await db.query.rooms.findFirst({
+	const room = await db.query.roomTypes.findFirst({
 		where: eq(rooms.id, Number(event.params.id)),
 		with: {
 			roomImageKeys: true

@@ -1,7 +1,7 @@
 import { error, fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
-import { roomImageKeys, rooms } from '$lib/server/db/schema';
+import { roomImageKeys, rooms, roomTypes } from '$lib/server/db/schema';
 import { utapi } from '$lib/server/uploadthing';
 import { eq } from 'drizzle-orm';
 
@@ -12,15 +12,20 @@ export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user.emailVerified) return redirect(303, '/auth/verify-email');
 	if (!event.locals.user.admin) return redirect(303, '/');
 
-	const rooms = await db.query.rooms.findMany();
-	return { rooms };
+	const roomTypes = await db.query.roomTypes.findMany({
+		columns: {
+			name: true,
+			id: true
+		}
+	});
+	return { roomTypes };
 };
 export const actions: Actions = {
-	addRoom: async (ev) => {
-		if (ev.locals.session === null) return fail(401);
-		if (ev.locals.user === null) return fail(401);
+	addRoomType: async (ev) => {
+		if (ev.locals.session === null) return error(401);
+		if (ev.locals.user === null) return error(401);
 		if (!ev.locals.user.admin) {
-			return fail(403);
+			return error(403);
 		}
 
 		const data = await ev.request.formData();
@@ -31,25 +36,45 @@ export const actions: Actions = {
 
 		const name = data.get('name') as string;
 		const desc = data.get('desc') as string;
+		const price = data.get('price') as string;
 		const size = Number(data.get('size'));
 
 		const roomID = await db
-			.insert(rooms)
+			.insert(roomTypes)
 			.values({
 				name,
 				description: desc,
-				size
+				size,
+				pricePerDay: Number(price)
 			})
 			.returning();
 
 		const res = await db
 			.insert(roomImageKeys)
-			.values(uploads.map((v) => ({ roomID: roomID[0].id, imageKey: v.data!.key })));
+			.values(uploads.map((v) => ({ roomTypeId: roomID[0].id, imageKey: v.data!.key })));
 
 		if (res.rowCount == null || res.rowCount < 1) {
 			await db.delete(rooms).where(eq(rooms.id, roomID[0].id));
 			return fail(500);
 		}
 		return { sucess: true };
+	},
+	addRoom: async (ev) => {
+		if (ev.locals.session === null) return error(401);
+		if (ev.locals.user === null) return error(401);
+		if (!ev.locals.user.admin) {
+			return error(403);
+		}
+
+		const data = await ev.request.formData();
+		const type = Number(data.get('roomType'));
+		const amount = Number(data.get('amount'));
+
+		const res = await db
+			.insert(rooms)
+			.values(Array.from({ length: amount }).map(() => ({ roomTypeId: type })));
+		if (res.rowCount != amount) return error(500);
+
+		return { roomSucess: true };
 	}
 };

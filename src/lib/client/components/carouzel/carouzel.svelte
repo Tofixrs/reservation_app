@@ -4,7 +4,6 @@
 
 	const intervalTime = 10000;
 
-	let page = $state(0);
 	let content: HTMLDivElement = $state()!;
 	let interval = $state(setInterval(autoChange, intervalTime));
 	const pageNum = $derived(content?.children.length);
@@ -19,8 +18,9 @@
 	type Props = {
 		children: Snippet;
 		class?: string;
+		page?: number;
 	};
-	const { children, class: className }: Props = $props();
+	let { children, class: className, page = $bindable(0) }: Props = $props();
 
 	function autoChange() {
 		if (page == pageNum - 1) return (page = 0);

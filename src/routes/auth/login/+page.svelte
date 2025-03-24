@@ -2,14 +2,21 @@
 	import type { PageProps } from './$types';
 	import AuthButton from '$lib/client/components/authButton.svelte';
 	import Button from '$lib/client/components/button.svelte';
+	import { browser } from '$app/environment';
 
 	let { form }: PageProps = $props();
+	let after = $state('');
+	if (browser) {
+		const url = new URL(window.location.href);
+		after = url.searchParams.get('after') ?? '';
+	}
 </script>
 
 <div class="flex justify-center">
 	<div class="flex flex-col justify-between gap-5 rounded-3xl border-2 border-gray-300 px-14 py-5">
 		<h1>Login</h1>
 		<form method="POST" action="?/login" class="flex flex-col gap-1">
+			<input type="hidden" name="after" value={after} />
 			<div><label for="email">Email</label></div>
 			<div class="flex grow">
 				<input
@@ -38,9 +45,18 @@
 			</div>
 		</form>
 
-		<AuthButton url="/auth/github" provider="Github" image="/github-mark.svg" />
-		<AuthButton url="/auth/google" provider="Google" image="/google.svg" invert={false} />
-		<AuthButton url="/auth/discord" provider="Discord" image="/discord-mark-black.svg" />
+		<AuthButton url={`/auth/github?after=${after}`} provider="Github" image="/github-mark.svg" />
+		<AuthButton
+			url={`/auth/google?after=${after}`}
+			provider="Google"
+			image="/google.svg"
+			invert={false}
+		/>
+		<AuthButton
+			url={`/auth/discord?after=${after}`}
+			provider="Discord"
+			image="/discord-mark-black.svg"
+		/>
 
 		<a href="/auth/register">Sign up instead</a>
 	</div>

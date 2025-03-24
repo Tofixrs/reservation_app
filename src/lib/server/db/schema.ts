@@ -6,10 +6,12 @@ import {
 	char,
 	timestamp,
 	serial,
-	text
+	text,
+	real,
+	check
 } from 'drizzle-orm/pg-core';
 import { Provider } from '../../provider';
-import { relations, type InferSelectModel } from 'drizzle-orm';
+import { gt, relations, type InferSelectModel } from 'drizzle-orm';
 
 export const users = pgTable('users', {
 	id: serial('id').primaryKey(),
@@ -27,57 +29,96 @@ export const usersRelations = relations(users, ({ many, one }) => ({
 	session: one(sessions)
 }));
 
+export const roomTypes = pgTable(
+	'room_types',
+	{
+		id: serial('id').primaryKey(),
+		size: smallint('size').notNull(),
+		description: text('description').notNull(),
+		name: varchar('name', { length: 50 }).notNull(),
+		pricePerDay: real('price_per_day').notNull()
+	},
+	(table) => [
+		{
+			price_check: check('price_checl', gt(table.pricePerDay, 0))
+		}
+	]
+);
+
+export const roomTypeRelations = relations(roomTypes, ({ many }) => ({
+	roomImageKeys: many(roomImageKeys),
+	rooms: many(rooms)
+}));
+
 export const rooms = pgTable('rooms', {
 	id: serial('id').primaryKey(),
-	size: smallint('size').notNull(),
-	description: text('description').notNull(),
-	name: varchar('name', { length: 50 }).notNull()
+	roomTypeId: serial('room_type_id')
+		.notNull()
+		.references(() => roomTypes.id, { onDelete: 'cascade' })
 });
 
-export const roomRelations = relations(rooms, ({ many }) => ({
-	roomImageKeys: many(roomImageKeys)
+export const roomRelations = relations(rooms, ({ one, many }) => ({
+	roomTypes: one(roomTypes, {
+		fields: [rooms.roomTypeId],
+		references: [roomTypes.id]
+	}),
+	reservationRooms: many(reservationRooms)
 }));
 
 export const roomImageKeys = pgTable('room_image_keys', {
 	imageKey: text('image_key').notNull(),
-	roomID: serial('roomID')
+	roomTypeId: serial('roomTypeId')
 		.notNull()
-		.references(() => rooms.id, { onDelete: 'cascade' })
+		.references(() => roomTypes.id, { onDelete: 'cascade' })
 });
 
 export const roomImageKeyRelations = relations(roomImageKeys, ({ one }) => ({
-	room: one(rooms, {
-		fields: [roomImageKeys.roomID],
-		references: [rooms.id]
+	roomType: one(roomTypes, {
+		fields: [roomImageKeys.roomTypeId],
+		references: [roomTypes.id]
 	})
 }));
 
 export const reservations = pgTable('reservations', {
 	id: serial('id').primaryKey(),
-	userId: serial('userId')
+	userId: serial('user_id')
 		.references(() => users.id, { onDelete: 'cascade' })
-		.notNull(),
-	roomId: serial('roomId')
-		.references(() => rooms.id, { onDelete: 'cascade' })
 		.notNull(),
 	timeOfArrival: timestamp('time_of_arrival').notNull(),
 	timeOfLeave: timestamp('time_of_leave').notNull()
 });
 
-export const reservationsRelations = relations(reservations, ({ one }) => ({
-	user: one(users, {
-		fields: [reservations.userId],
-		references: [users.id]
+export const reservationRooms = pgTable('reservation_rooms', {
+	reservationID: serial('rerservation_id').references(() => reservations.id, {
+		onDelete: 'cascade'
 	}),
-	room: one(rooms, {
-		fields: [reservations.roomId],
+	roomId: serial('room_id')
+		.references(() => rooms.id, { onDelete: 'cascade' })
+		.unique()
+});
+
+export const reservationRoomsRelations = relations(reservationRooms, ({ one }) => ({
+	reservation: one(reservations, {
+		fields: [reservationRooms.reservationID],
+		references: [reservations.id]
+	}),
+	rooms: one(rooms, {
+		fields: [reservationRooms.roomId],
 		references: [rooms.id]
 	})
 }));
 
+export const reservationsRelations = relations(reservations, ({ one, many }) => ({
+	user: one(users, {
+		fields: [reservations.userId],
+		references: [users.id]
+	}),
+	reservationRooms: many(reservationRooms)
+}));
+
 export const sessions = pgTable('sessions', {
 	id: varchar('id', { length: 255 }).notNull().primaryKey(),
-	userId: serial('userId')
+	userId: serial('user_id')
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
 	expiresAt: timestamp('expires_at', { mode: 'date' }).notNull()
@@ -92,7 +133,7 @@ export const sessionRelations = relations(sessions, ({ one }) => ({
 
 export const emailVerification = pgTable('email_verification', {
 	id: serial('id').primaryKey(),
-	userId: serial('userId')
+	userId: serial('user_id')
 		.references(() => users.id, { onDelete: 'cascade' })
 		.notNull(),
 	code: char('code', { length: 8 }).notNull(),
@@ -111,3 +152,6 @@ export type User = Omit<UserDB, 'password'>;
 
 export type Session = InferSelectModel<typeof sessions>;
 export type EmailVerification = InferSelectModel<typeof emailVerification>;
+export type Room = InferSelectModel<typeof rooms>;
+export type RoomType = InferSelectModel<typeof roomTypes>;
+export type RoomWithInfo = Room & { roomTypes: RoomType };

@@ -1,4 +1,3 @@
-import { Provider } from '$lib/provider';
 import { db } from '$lib/server/db';
 import { users } from '$lib/server/db/schema';
 import { createSession, generateSessionToken, setSessionTokenCookie } from '$lib/server/session';
@@ -11,6 +10,7 @@ export const actions = {
 		const data = await event.request.formData();
 		const email = data.get('email') as string;
 		const password = data.get('password') as string;
+		const after = event.cookies.get('after_login') ?? '';
 
 		const user = await db.query.users.findFirst({
 			where: eq(users.email, email)
@@ -22,6 +22,6 @@ export const actions = {
 		const session = await createSession(sessionToken, user.id);
 		setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
-		return redirect(302, '/');
+		return redirect(302, after == '' ? '/' : after);
 	}
 } satisfies Actions;

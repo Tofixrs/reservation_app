@@ -1,5 +1,5 @@
 import { generateCodeVerifier, generateState } from 'arctic';
-import type { RequestEvent } from '../../register/$types';
+import type { RequestEvent } from './$types';
 import { google } from '$lib/server/oauth';
 
 export async function GET(event: RequestEvent): Promise<Response> {

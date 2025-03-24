@@ -8,8 +8,6 @@
 	const { children, class: className }: Props = $props();
 </script>
 
-<div class={`flex min-w-full justify-center align-middle ${className ?? ''}`}>
-	<div class="grid content-center">
-		{@render children()}
-	</div>
+<div class={`grid max-h-svh w-full min-w-full place-items-center ${className ?? ''}`}>
+	{@render children()}
 </div>

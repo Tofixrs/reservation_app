@@ -2,7 +2,6 @@
 	import type { PageProps } from './$types';
 	import { PUBLIC_UPLOADTHING_ID } from '$env/static/public';
 	import Calendar from 'svelte-google-materialdesign-icons/Calendar_month.svelte';
-	import Button from '$lib/client/components/button.svelte';
 	import CropFree from 'svelte-google-materialdesign-icons/Crop_free.svelte';
 	import Close from 'svelte-google-materialdesign-icons/Close.svelte';
 	import * as Carouzel from '$lib/client/components/carouzel';
@@ -11,16 +10,19 @@
 	const descParts = data.room.description.split('\n').filter((v) => v != '\r' && v != '');
 
 	let galleryOpened = $state(false);
-	window.addEventListener('keydown', (ev) => {
-		if (!galleryOpened) return;
+	let galleryPage = $state(0);
+	$effect.pre(() => {
+		window.addEventListener('keydown', (ev) => {
+			if (!galleryOpened) return;
 
-		if (ev.key == 'Escape') galleryOpened = false;
+			if (ev.key == 'Escape') galleryOpened = false;
+		});
 	});
 </script>
 
 <div
 	class={{
-		'absolute top-0 left-0 z-50 grid h-full w-full place-items-center transition-opacity': true,
+		'fixed top-0 left-0 z-50 grid h-dvh place-items-center transition-opacity': true,
 		'bg-black/50': galleryOpened,
 		'pointer-events-none': !galleryOpened,
 		'opacity-0': !galleryOpened
@@ -32,10 +34,14 @@
 	>
 		<Close />
 	</button>
-	<Carouzel.Root class="max-w-1/2">
+	<Carouzel.Root class="max-h-3/4 max-w-1/2" bind:page={galleryPage}>
 		{#each data.room.roomImageKeys as key}
 			<Carouzel.Item>
-				<img src={`https://${PUBLIC_UPLOADTHING_ID}.ufs.sh/f/${key.imageKey}`} alt="" />
+				<img
+					src={`https://${PUBLIC_UPLOADTHING_ID}.ufs.sh/f/${key.imageKey}`}
+					alt=""
+					class="max-h-full"
+				/>
 			</Carouzel.Item>
 		{/each}
 	</Carouzel.Root>
@@ -55,7 +61,13 @@
 				{/each}
 			</div>
 			<div class="flex justify-center">
-				<Button class="flex gap-5"><Calendar />Zarezewuj teraz</Button>
+				<a
+					class="border-text hover:border-primary hover:text-primary text-text flex gap-5 rounded-xl border-2 px-5 py-2 no-underline transition-colors"
+					href={`/reservation?roomType=${data.room.id}`}
+				>
+					<Calendar />
+					<span> Zarezewuj teraz </span>
+				</a>
 			</div>
 		</div>
 		<div
@@ -69,14 +81,17 @@
 		<hr class="border-accent w-1/2" />
 	</div>
 	<div class="grid grid-cols-4 gap-5">
-		{#each data.room.roomImageKeys as key}
+		{#each data.room.roomImageKeys as key, i}
 			<div
 				class="relative grid min-h-64 place-items-center bg-cover bg-center bg-no-repeat"
 				style={`background-image: url(https://${PUBLIC_UPLOADTHING_ID}.ufs.sh/f/${key.imageKey})`}
 			>
 				<button
 					class="absolute grid h-full w-full cursor-pointer place-items-center bg-black/50 opacity-0 transition-opacity hover:opacity-100"
-					onclick={() => (galleryOpened = true)}
+					onclick={() => {
+						galleryPage = i;
+						galleryOpened = true;
+					}}
 				>
 					<CropFree />
 				</button>

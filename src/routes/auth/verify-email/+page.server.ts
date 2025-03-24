@@ -24,6 +24,7 @@ export const actions: Actions = {
 		const data = await event.request.formData();
 		const code = data.get('verificationCode');
 		const verificationId = event.cookies.get('email_verification');
+		const after = event.cookies.get('after_login') ?? '';
 
 		if (!verificationId) {
 			const emailVerificationRequest = await createEmailVerificationRequest(event.locals.user.id);
@@ -56,7 +57,7 @@ export const actions: Actions = {
 		await db.delete(emailVerification).where(eq(emailVerification.id, Number(verificationId)));
 		deleteEmailVerificationRequestCookie(event);
 
-		redirect(303, '/');
+		redirect(303, after == '' ? '/' : after);
 	},
 	changeRequestedEmail: async (event) => {
 		if (event.locals.user === null) {

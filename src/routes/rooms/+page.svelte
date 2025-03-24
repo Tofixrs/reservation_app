@@ -8,11 +8,15 @@
 
 <div class="grid grid-cols-2 gap-20 px-40 max-md:grid-cols-1 max-sm:px-0">
 	{#each props.data.rooms as room}
-		<div class="flex flex-col">
+		<div class="flex flex-col flex-wrap">
 			<Carouzel.Root class="grow">
 				{#each room.roomImageKeys as key}
-					<Carouzel.Item class="max-h-[500px]">
-						<img src={`https://${PUBLIC_UPLOADTHING_ID}.ufs.sh/f/${key.imageKey}`} alt="" />
+					<Carouzel.Item class="!max-h-[500px]">
+						<img
+							src={`https://${PUBLIC_UPLOADTHING_ID}.ufs.sh/f/${key.imageKey}`}
+							alt=""
+							class="max-h-full"
+						/>
 					</Carouzel.Item>
 				{/each}
 			</Carouzel.Root>

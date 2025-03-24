@@ -7,8 +7,9 @@
 		focus?: boolean;
 		valid?: string;
 		required?: boolean;
-		min?: number;
-		max?: number;
+		min?: number | string | null;
+		max?: number | string | null;
+		disabled?: boolean;
 	}
 	let input: HTMLInputElement | undefined = $state();
 	let {
@@ -20,7 +21,8 @@
 		valid = '',
 		required = true,
 		min,
-		max
+		max,
+		disabled
 	}: Props = $props();
 	$effect(() => {
 		if (!input) return;
@@ -41,4 +43,5 @@
 	bind:this={input}
 	bind:value
 	{required}
+	{disabled}
 />

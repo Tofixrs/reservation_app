@@ -7,6 +7,7 @@
 @theme {
 	--color-text: var(--text);
 	--color-background: var(--background);
+	--color-foreground: var(--foreground);
 	--color-primary: var(--primary);
 	--color-secondary: var(--secondary);
 	--color-accent: var(--accent);
@@ -17,6 +18,7 @@
 		:root {
 			--text: #d9f8eb;
 			--background: #020906;
+			--foreground: #0d0f0e;
 			--primary: #8de8bd;
 			--secondary: #1a5584;
 			--accent: #4874db;
@@ -26,6 +28,7 @@
 		:root {
 			--text: #07271a;
 			--background: #f7fdfa;
+			--foreground: gray;
 			--primary: #177248;
 			--secondary: #7bb5e5;
 			--accent: #2450b7;
@@ -52,7 +55,7 @@
 	}
 }
 
-:root.light {
+.light {
 	--text: #07271a;
 	--background: #f7fdfa;
 	--primary: #177248;

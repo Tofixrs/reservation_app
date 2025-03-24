@@ -14,6 +14,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	const state = event.url.searchParams.get('state');
 	const storedState = event.cookies.get('discord_oauth_state') ?? null;
 	const codeVerifier = event.cookies.get('discord_code_verifier') ?? null;
+	const after = event.cookies.get('after_login') ?? '';
 	if (code === null || state === null || storedState === null || codeVerifier == null) {
 		return new Response(null, {
 			status: 400
@@ -59,7 +60,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		return new Response(null, {
 			status: 302,
 			headers: {
-				Location: '/'
+				Location: after == null || after == '' ? '/' : after
 			}
 		});
 	}
@@ -75,7 +76,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 	return new Response(null, {
 		status: 302,
 		headers: {
-			Location: '/'
+			Location: after == null || after == '' ? '/' : after
 		}
 	});
 }

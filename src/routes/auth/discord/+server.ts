@@ -13,6 +13,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		maxAge: 60 * 10,
 		sameSite: 'lax'
 	});
+
 	event.cookies.set('discord_code_verifier', codeVerifier, {
 		path: '/',
 		httpOnly: true,

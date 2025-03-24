@@ -4,6 +4,7 @@ import {
 	setSessionTokenCookie,
 	deleteSessionTokenCookie
 } from './lib/server/session';
+import { locale } from 'svelte-i18n';
 
 import type { Handle } from '@sveltejs/kit';
 
@@ -24,5 +25,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	event.locals.session = session;
 	event.locals.user = user;
+	const lang = event.request.headers.get('accept-language')?.split(',')[0];
+	if (lang) {
+		locale.set(lang);
+	}
 	return resolve(event);
 };
