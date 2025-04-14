@@ -48,6 +48,6 @@
 		</button>
 	</div>
 </header>
-<main class="p-5">
+<main class="flex grow flex-col p-5">
 	{@render children()}
 </main>

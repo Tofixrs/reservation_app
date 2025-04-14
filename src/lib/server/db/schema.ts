@@ -92,9 +92,7 @@ export const reservationRooms = pgTable('reservation_rooms', {
 	reservationID: serial('rerservation_id').references(() => reservations.id, {
 		onDelete: 'cascade'
 	}),
-	roomId: serial('room_id')
-		.references(() => rooms.id, { onDelete: 'cascade' })
-		.unique()
+	roomId: serial('room_id').references(() => rooms.id, { onDelete: 'cascade' })
 });
 
 export const reservationRoomsRelations = relations(reservationRooms, ({ one }) => ({

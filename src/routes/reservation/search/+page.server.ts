@@ -59,16 +59,8 @@ export const load: PageServerLoad = async (ev) => {
 									.where(
 										and(
 											eq(reservations.id, reservationRooms.reservationID),
-											or(
-												and(
-													gte(sql`${reservations.timeOfLeave}::date`, from),
-													lte(sql`${reservations.timeOfArrival}::date`, from)
-												),
-												and(
-													gte(sql`${reservations.timeOfLeave}::date`, from),
-													lte(sql`${reservations.timeOfArrival}::date`, from)
-												)
-											)
+											lte(reservations.timeOfArrival, until),
+											gte(reservations.timeOfLeave, from)
 										)
 									)
 							)
