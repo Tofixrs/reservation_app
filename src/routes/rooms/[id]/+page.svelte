@@ -46,8 +46,8 @@
 		{/each}
 	</Carouzel.Root>
 </div>
-<div class="px-40 max-sm:px-0">
-	<div class="grid grid-cols-2 gap-5">
+<div class="px-40 max-xl:px-0">
+	<div class="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
 		<div>
 			<h1 class="text-center text-4xl">{data.room.name}</h1>
 			<div class="flex justify-center py-5">
@@ -60,7 +60,7 @@
 					</p>
 				{/each}
 			</div>
-			<div class="flex justify-center">
+			<div class="flex justify-center max-lg:hidden">
 				<a
 					class="border-text hover:border-primary hover:text-primary text-text flex gap-5 rounded-xl border-2 px-5 py-2 no-underline transition-colors"
 					href={`/reservation?roomType=${data.room.id}`}
@@ -71,16 +71,25 @@
 			</div>
 		</div>
 		<div
-			class="bg-cover bg-center bg-no-repeat"
+			class="bg-cover bg-center bg-no-repeat max-lg:min-h-[400px] max-md:hidden"
 			style={`background-image: url(https://${PUBLIC_UPLOADTHING_ID}.ufs.sh/f/${data.room.roomImageKeys[0].imageKey})`}
 		></div>
+		<div class="flex justify-center lg:hidden">
+			<a
+				class="border-text hover:border-primary hover:text-primary text-text flex gap-5 rounded-xl border-2 px-5 py-2 no-underline transition-colors"
+				href={`/reservation?roomType=${data.room.id}`}
+			>
+				<Calendar />
+				<span> Zarezewuj teraz </span>
+			</a>
+		</div>
 	</div>
 
 	<h1 class="py-5 text-center text-4xl">Gallery</h1>
 	<div class="flex justify-center py-5">
 		<hr class="border-accent w-1/2" />
 	</div>
-	<div class="grid grid-cols-4 gap-5">
+	<div class="grid grid-cols-4 gap-5 max-lg:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
 		{#each data.room.roomImageKeys as key, i}
 			<div
 				class="relative grid min-h-64 place-items-center bg-cover bg-center bg-no-repeat"

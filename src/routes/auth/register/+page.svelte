@@ -31,91 +31,95 @@
 	const { form }: PageProps = $props();
 </script>
 
-<div class="flex justify-center">
-	<div class="flex flex-col justify-between gap-5 rounded-3xl border-2 border-gray-300 px-14 py-5">
-		<h1>Sign up</h1>
-		<form
-			action="?/register"
-			method="POST"
-			class="flex flex-col gap-1"
-			onsubmit={onSubmit}
-			id="form"
+<div class="flex grow items-center justify-center">
+	<div class="flex justify-center">
+		<div
+			class="flex flex-col justify-between gap-5 rounded-3xl border-2 border-gray-300 px-14 py-5"
 		>
-			<div><label for="email">Email</label></div>
-			<div class="flex">
-				<Input id="email" name="email" type="email" />
-			</div>
-			<div><label for="email">Password</label></div>
-			<div class="flex">
-				<Input
-					id="password"
-					name="password"
-					type="password"
-					bind:value={password}
-					bind:focus={passwordFocus}
-					valid={!validPassword ? "Password doesn't meet all requirements" : ''}
-				/>
-			</div>
-			<div><label for="email">Confirm password</label></div>
-			<div class="flex">
-				<Input
-					id="confirmPassword"
-					name="confirmPassword"
-					type="password"
-					valid={samePasswords ? '' : 'Passwords dont match'}
-					bind:value={confirmPassword}
-				/>
-			</div>
-			<div class="overflow-hidden">
-				<div
-					class="flex justify-between gap-5 transition-transform duration-300"
-					class:translate-y-0={passwordCheckVisible}
-					class:translate-y-[-100px]={!passwordCheckVisible}
-				>
+			<h1>Sign up</h1>
+			<form
+				action="?/register"
+				method="POST"
+				class="flex flex-col gap-1"
+				onsubmit={onSubmit}
+				id="form"
+			>
+				<div><label for="email">Email</label></div>
+				<div class="flex">
+					<Input id="email" name="email" type="email" />
+				</div>
+				<div><label for="email">Password</label></div>
+				<div class="flex">
+					<Input
+						id="password"
+						name="password"
+						type="password"
+						bind:value={password}
+						bind:focus={passwordFocus}
+						valid={!validPassword ? "Password doesn't meet all requirements" : ''}
+					/>
+				</div>
+				<div><label for="email">Confirm password</label></div>
+				<div class="flex">
+					<Input
+						id="confirmPassword"
+						name="confirmPassword"
+						type="password"
+						valid={samePasswords ? '' : 'Passwords dont match'}
+						bind:value={confirmPassword}
+					/>
+				</div>
+				<div class="overflow-hidden">
 					<div
-						class="border-b-2 text-center"
-						class:border-green-500={validLength}
-						class:border-red-500={!validLength}
+						class="flex justify-between gap-5 transition-transform duration-300"
+						class:translate-y-0={passwordCheckVisible}
+						class:translate-y-[-100px]={!passwordCheckVisible}
 					>
-						Length
-					</div>
-					<div
-						class="border-b-2 text-center"
-						class:border-green-500={bigLetter}
-						class:border-red-500={!bigLetter}
-					>
-						Big letter
-					</div>
-					<div
-						class="border-b-2 text-center"
-						class:border-gren-500={numbers}
-						class:border-red-500={!numbers}
-					>
-						Number
-					</div>
-					<div
-						class="border-b-2 text-center"
-						class:border-green-500={specialChars}
-						class:border-red-500={!specialChars}
-					>
-						Special char
+						<div
+							class="border-b-2 text-center"
+							class:border-green-500={validLength}
+							class:border-red-500={!validLength}
+						>
+							Length
+						</div>
+						<div
+							class="border-b-2 text-center"
+							class:border-green-500={bigLetter}
+							class:border-red-500={!bigLetter}
+						>
+							Big letter
+						</div>
+						<div
+							class="border-b-2 text-center"
+							class:border-gren-500={numbers}
+							class:border-red-500={!numbers}
+						>
+							Number
+						</div>
+						<div
+							class="border-b-2 text-center"
+							class:border-green-500={specialChars}
+							class:border-red-500={!specialChars}
+						>
+							Special char
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="text-red-500">
-				{#if form?.alreadyExists}
-					Users with provided email already exists
-				{/if}
-			</div>
-			<div>
-				<Button>Sign up</Button>
-			</div>
-		</form>
+				<div class="text-red-500">
+					{#if form?.alreadyExists}
+						Users with provided email already exists
+					{/if}
+				</div>
+				<div>
+					<Button>Sign up</Button>
+				</div>
+			</form>
 
-		<AuthButton url="/auth/github" image="/github-mark.svg" provider="Github" />
-		<AuthButton url="/auth/google" image="/google.svg" provider="Google" invert={false} />
-		<AuthButton url="/auth/discord" image="/discord-mark-black.svg" provider="Discord" />
+			<AuthButton url="/auth/github" image="/github-mark.svg" provider="Github" />
+			<AuthButton url="/auth/google" image="/google.svg" provider="Google" invert={false} />
+			<AuthButton url="/auth/discord" image="/discord-mark-black.svg" provider="Discord" />
 
-		<a href="/auth/login">Sign in instead</a>
+			<a href="/auth/login">Sign in instead</a>
+		</div>
 	</div>
 </div>

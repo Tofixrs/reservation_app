@@ -7,8 +7,8 @@
 	import Img5 from '$lib/assets/images/front_page/HotelWarszawa5.jpg';
 </script>
 
-<h1 class="text-center text-5xl">HOTEL WARSZAWA</h1>
-<Carouzel.Root class="m-auto max-w-[65%]">
+<h1 class="text-center text-5xl max-sm:text-3xl">HOTEL WARSZAWA</h1>
+<Carouzel.Root class="m-auto max-w-[65%] max-sm:max-w-[100%]">
 	<Carouzel.Item><img src={Img1} alt="" class="rounded-xl" /></Carouzel.Item>
 	<Carouzel.Item><img src={Img2} alt="" class="rounded-xl" /></Carouzel.Item>
 	<Carouzel.Item><img src={Img3} alt="" class="rounded-xl" /></Carouzel.Item>
@@ -16,7 +16,7 @@
 	<Carouzel.Item><img src={Img5} alt="" class="rounded-xl" /></Carouzel.Item>
 </Carouzel.Root>
 
-<div class="flex justify-center text-4xl">
+<div class="flex justify-center text-4xl max-sm:text-2xl">
 	<a
 		href="/rooms"
 		class="text-text border-text hover:text-primary hover:border-primary block rounded-3xl border-2 px-10 py-5 text-center no-underline transition-colors"

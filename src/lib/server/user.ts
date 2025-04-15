@@ -21,7 +21,8 @@ export async function createUser(
 			OAuthId: OAuthId == undefined ? null : OAuthId,
 			emailVerified: emailVerified ?? false,
 			provider,
-			admin: false
+			admin: false,
+			changingEmail: u[0].changingEmail
 		};
 		return user;
 	} catch (e) {

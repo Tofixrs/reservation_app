@@ -3,6 +3,7 @@
 	import Input from '$lib/client/components/input.svelte';
 	import Close from 'svelte-google-materialdesign-icons/Close.svelte';
 	import type { PageProps } from './$types';
+	import { pan, swipe, composedGesture, scrollComposition } from 'svelte-gestures';
 
 	const { data }: PageProps = $props();
 	let rooms: number[] = $state([]);
@@ -13,6 +14,8 @@
 	tomorrow.setDate(tomorrow.getDate() + 1);
 
 	let dropDownOpen = $state(false);
+	let dropDownRef: HTMLDivElement;
+	let shouldHideDropdown = false;
 </script>
 
 <h1 class="text-center text-4xl">Reservation</h1>
@@ -25,7 +28,7 @@
 	}}
 >
 	<div></div>
-	<div class="flex items-stretch gap-10">
+	<div class="flex flex-wrap items-stretch justify-center gap-10">
 		<div class="bg-foreground flex flex-col rounded-xl px-5 py-2">
 			<label for="from" class="text-center">Arrival</label>
 			<Input
@@ -47,11 +50,14 @@
 			/>
 		</div>
 
-		<div class="relative">
+		<div class="max-md:relative">
 			<button
 				class="bg-foreground relative flex min-h-[100%] flex-col justify-evenly rounded-xl px-5 py-2"
 				type="button"
-				onclick={() => (dropDownOpen = !dropDownOpen)}
+				onclick={() => {
+					dropDownOpen = !dropDownOpen;
+					dropDownRef.style.top = '0px';
+				}}
 			>
 				<div>
 					<p>Rooms: {rooms.length}</p>
@@ -59,36 +65,72 @@
 				</div>
 			</button>
 			<div
-				class="bg-foreground absolute mt-2 min-w-100 rounded-xl pb-2 transition-all transition-discrete starting:opacity-0"
+				class="max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:flex max-lg:max-h-[100vh] max-lg:min-h-full max-lg:w-full max-lg:flex-col max-lg:justify-end max-lg:overflow-scroll max-lg:bg-black/50 lg:contents"
 				class:opacity-100={dropDownOpen}
-				class:hidden={!dropDownOpen}
+				class:max-lg:hidden={!dropDownOpen}
+				bind:this={dropDownRef}
+				use:composedGesture={(r) => {
+					const scrollFns = r(scrollComposition, { delay: 0 });
+					return (evs, ev) => {
+						if (window.screen.width >= 1024) return;
+						const top = parseFloat(dropDownRef.style.top);
+						if (dropDownRef.scrollTop == 0 && (ev.offsetY > 0 || top > 0)) {
+							dropDownRef.style.top = `${top + ev.offsetY}px`;
+							if (parseFloat(dropDownRef.style.top) > window.screen.height / 3) {
+								shouldHideDropdown = true;
+							}
+							return;
+						}
+						//@ts-expect-error: weird shit?
+						scrollFns.onMove(evs, ev);
+					};
+				}}
+				onpointerup={() => {
+					if (shouldHideDropdown) {
+						dropDownOpen = false;
+						shouldHideDropdown = false;
+					} else {
+						dropDownRef.style.top = '0px';
+					}
+				}}
 			>
-				{#each rooms as room, i}
-					<div>
-						<div class="bg-primary p-2" class:rounded-t-xl={i == 0}>
-							<h1>Pokój {i + 1}</h1>
-						</div>
-						<div class="flex justify-between p-2">
-							<span> Osób </span>
-							<span>
-								<button type="button" onclick={() => rooms[i] > 0 && rooms[i]--}>-</button>
-								{room}
-								<button type="button" onclick={() => rooms[i]++}>+</button>
+				<div
+					class="bg-foreground mt-2 flex min-w-100 flex-col gap-5 rounded-xl pb-2 transition-all transition-discrete max-lg:min-h-[25%] lg:absolute starting:opacity-0"
+					class:opacity-100={dropDownOpen}
+					class:hidden={!dropDownOpen}
+				>
+					<div class="bg-foreground">
+						{#each rooms as room, i}
+							<div>
+								<div class="bg-primary p-2" class:rounded-t-xl={i == 0}>
+									<h1>Pokój {i + 1}</h1>
+								</div>
+								<div class="flex justify-between p-2">
+									<span> Osób </span>
+									<span>
+										<button type="button" onclick={() => rooms[i] > 0 && rooms[i]--}>-</button>
+										{room}
+										<button type="button" onclick={() => rooms[i]++}>+</button>
 
-								<button
-									type="button"
-									onclick={() => {
-										rooms.splice(i, 1);
-									}}>X</button
-								>
-							</span>
-						</div>
+										<button
+											type="button"
+											onclick={() => {
+												rooms.splice(i, 1);
+											}}>X</button
+										>
+									</span>
+								</div>
+							</div>
+						{/each}
 					</div>
-				{/each}
-				<div class="flex justify-center">
-					<Button type="button" onclick={() => rooms.push(peopleNum != '' ? Number(peopleNum) : 2)}>
-						Dodaj pokój
-					</Button>
+					<div class="flex justify-center">
+						<Button
+							type="button"
+							onclick={() => rooms.push(peopleNum != '' ? Number(peopleNum) : 2)}
+						>
+							Dodaj pokój
+						</Button>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -20,7 +20,7 @@ export const load: PageServerLoad = async (event) => {
 	}
 	if (!event.locals.user.emailVerified) return redirect(303, '/auth/verify-email');
 
-	return { provider: event.locals.user.provider };
+	return { user: event.locals.user };
 };
 
 export const actions: Actions = {
