@@ -3,7 +3,7 @@
 	import Button from '$lib/client/components/button.svelte';
 	import type { PageProps } from './$types';
 	import type { RoomWithInfo } from '$lib/server/db/schema';
-	import { locale } from 'svelte-i18n';
+	import { locale, _ } from 'svelte-i18n';
 
 	const { data }: PageProps = $props();
 	const diff = data.until.getTime() - data.from.getTime();
@@ -24,39 +24,45 @@
 	}
 </script>
 
+<div class="bg-background sticky top-0 flex justify-center gap-5 p-5">
+	<div class="bg-secondary grid min-w-36 grid-rows-2 rounded-sm px-2 py-1">
+		<p>
+			{data.from.toLocaleDateString($locale ?? 'en-US', { weekday: 'short' })}
+			{data.from.getDate()}
+			{data.from.toLocaleDateString($locale ?? 'en-US', { month: 'short' })}
+		</p>
+		<p class="text-xs">{data.from.getFullYear()}</p>
+	</div>
+	<div class="bg-secondary grid min-w-36 grid-rows-2 rounded-sm px-2 py-1">
+		<p>
+			{data.until.toLocaleDateString($locale ?? 'en-US', { weekday: 'short' })}
+			{data.until.getDate()}
+			{data.until.toLocaleDateString($locale ?? 'en-US', { month: 'short' })}
+		</p>
+		<p class="text-xs">{data.until.getFullYear()}</p>
+	</div>
+	<div class="bg-secondary grid min-w-36 place-items-center rounded-sm px-2 py-1">
+		{days}
+		{$_('days')}
+	</div>
+	<div class="bg-secondary grid min-w-36 grid-rows-2 rounded-sm px-2 py-1">
+		<p>
+			{data.roomSizes.reduce((a, b) => a + b)}
+			{$_('people').toLowerCase()}
+		</p>
+		<p class="text-xs">{data.roomSizes.length} {$_('rooms').toLowerCase()}</p>
+	</div>
+	<div class="bg-secondary grid min-w-36 grid-rows-2 rounded-sm px-2 py-1">
+		<p>{$_('max_price')}</p>
+		<p class="text-xs">{data.maxPrice}zł</p>
+	</div>
+</div>
 {#if data.notEnoughRoomsOfSize}
 	<h1 class="text-center text-4xl">
-		<span>No availble rooms of the sizes provided</span>
-		<a href="/reservation">Go back</a>
+		<span>{$_('no_search')}</span>
+		<a href="/reservation">{$_('go_back')}</a>
 	</h1>
 {:else if data.search.length != 0}
-	<div class="bg-background sticky top-0 flex justify-center gap-5 p-5">
-		<div class="bg-secondary grid min-w-36 grid-rows-2 rounded-sm px-2 py-1">
-			<p>
-				{data.from.toLocaleDateString($locale ?? 'en-US', { weekday: 'short' })}
-				{data.from.getDate()}
-				{data.from.toLocaleDateString($locale ?? 'en-US', { month: 'short' })}
-			</p>
-			<p class="text-xs">{data.from.getFullYear()}</p>
-		</div>
-		<div class="bg-secondary grid min-w-36 grid-rows-2 rounded-sm px-2 py-1">
-			<p>
-				{data.until.toLocaleDateString($locale ?? 'en-US', { weekday: 'short' })}
-				{data.until.getDate()}
-				{data.until.toLocaleDateString($locale ?? 'en-US', { month: 'short' })}
-			</p>
-			<p class="text-xs">{data.until.getFullYear()}</p>
-		</div>
-		<div class="bg-secondary grid min-w-36 place-items-center rounded-sm px-2 py-1">
-			{days} days
-		</div>
-		<div class="bg-secondary grid min-w-36 grid-rows-2 rounded-sm px-2 py-1">
-			<p>
-				{`${data.roomSizes.reduce((a, b) => a + b)} people`}
-			</p>
-			<p class="text-xs">{`${data.roomSizes.length} room(s)`}</p>
-		</div>
-	</div>
 	<div class="flex flex-col gap-10 px-40">
 		{#each data.search as room}
 			<div class="bg-secondary flex gap-10 rounded-sm">
@@ -73,7 +79,7 @@
 						</div>
 					</div>
 					<Button onclick={() => addRoom(room)}
-						>{roomsAdded.find((v) => v.id == room.id) ? 'Added' : 'Book'}</Button
+						>{roomsAdded.find((v) => v.id == room.id) ? $_('added') : $_('book')}</Button
 					>
 				</div>
 			</div>
@@ -82,11 +88,11 @@
 	{#if roomsAdded.length > 0}
 		<div class="bg-background sticky bottom-0 flex justify-between px-40 py-5">
 			<div>
-				<p>From</p>
+				<p>{$_('from')}</p>
 				<p>{roomsAdded.reduce((acc, v) => acc + v.roomTypes.pricePerDay, 0) * days}zł</p>
 			</div>
 			<form action="/reservation/reserve" method="GET">
-				<div><Button disabled={peopleNeeded > peopleAdded}>Next</Button></div>
+				<div><Button disabled={peopleNeeded > peopleAdded}>{$_('next')}</Button></div>
 				<input
 					type="hidden"
 					value={JSON.stringify(roomsAdded.map((v) => v.id))}
@@ -103,7 +109,7 @@
 	{/if}
 {:else}
 	<h1 class="text-center text-4xl">
-		<span>No availble rooms</span>
+		<span>{$_('no_search')}</span>
 		<a href="/reservation">Go back</a>
 	</h1>
 {/if}

@@ -4,6 +4,7 @@
 	import Button from '$lib/client/components/button.svelte';
 	import Input from '$lib/client/components/input.svelte';
 	import type { PageProps } from './$types';
+	import { _ } from 'svelte-i18n';
 
 	const { form, data }: PageProps = $props();
 	let password = $state('');
@@ -51,7 +52,7 @@
 		</div>
 		<div class="flex justify-between">
 			<div>
-				<span>Password:</span>
+				<span>{$_('password')}:</span>
 				<span>
 					{Array.from({ length: 8 })
 						.map(() => '*')
@@ -63,7 +64,7 @@
 		<hr class="bg-text my-5 h-[1px] border-none" />
 		<form action="?/logout" method="POST">
 			<div>
-				<Button>Sign out</Button>
+				<Button>{$_('sign_out')}</Button>
 			</div>
 		</form>
 	</div>
@@ -73,28 +74,28 @@
 	class:hidden={!emailModalOpen}
 >
 	<button
-		class="border-text hover:border-primary hover:text-primary absolute top-10 left-10 grid h-10 w-10 place-items-center rounded-full border-2 transition-colors"
+		class="hover:border-primary hover:text-primary absolute top-10 left-10 grid h-10 w-10 place-items-center rounded-full border-2 border-white text-white transition-colors"
 		onclick={() => (emailModalOpen = false)}
 	>
 		<Close />
 	</button>
 	<div class="border-text bg-background rounded-xl border-2 border-solid px-20 py-10">
-		<h1 class="text-3xl">Change email</h1>
+		<h1 class="text-3xl">{$_('change_email')}</h1>
 		{#if !form?.codeSent}
 			<form action="?/sendEmailChangeCode" method="POST">
-				<div><label for="passwordCode">Password</label></div>
+				<div><label for="passwordCode">{$_('password')}</label></div>
 				<Input id="codePassword" name="codePassword" type="password" required />
-				<Button>Send code</Button>
+				<Button>{$_('send_code')}</Button>
 			</form>
 		{:else}
 			<form action="?/changeEmail" method="POST">
-				<div><label for="changeEmailCode">Code:</label></div>
+				<div><label for="changeEmailCode">{$_('code')}:</label></div>
 				<Input id="changeEmailCode" name="changeEmailCode" type="text" required />
-				<div><label for="newEmail">New Email:</label></div>
-				<Input id="New Email" name="newEmail" type="text" required />
-				<Button>Send code</Button>
+				<div><label for="newEmail">{$_('new_email')}:</label></div>
+				<Input id="newEmail" name="newEmail" type="text" required />
+				<Button>{$_('send_code')}</Button>
 			</form>
-			<p>Verification code has been sent to your email</p>
+			<p>{$_('code_sent')}</p>
 		{/if}
 	</div>
 </div>
@@ -103,22 +104,22 @@
 	class:hidden={!passwordModalOpen}
 >
 	<button
-		class="border-text hover:border-primary hover:text-primary absolute top-10 left-10 grid h-10 w-10 place-items-center rounded-full border-2 transition-colors"
+		class="hover:border-primary hover:text-primary absolute top-10 left-10 grid h-10 w-10 place-items-center rounded-full border-2 border-white text-white transition-colors"
 		onclick={() => (passwordModalOpen = false)}
 	>
 		<Close />
 	</button>
 	<div class="border-text bg-background rounded-xl border-2 border-solid px-20 py-10">
 		<form action="?/changePassword" method="POST" onsubmit={onSubmit} class="flex flex-col gap-1">
-			<h1 class="text-3xl">Change password</h1>
+			<h1 class="text-3xl">{$_('change_password')}</h1>
 			<div>
-				<label for="currentPassword">Current password</label>
+				<label for="currentPassword">{$_('current_password')}</label>
 			</div>
 			<div class="flex">
 				<Input type="password" name="currentPassword" id="currentPassword" required={false} />
 			</div>
 			<div>
-				<label for="password">Password</label>
+				<label for="password">{$_('password')}</label>
 			</div>
 			<div class="flex">
 				<Input
@@ -127,17 +128,17 @@
 					type="password"
 					bind:value={password}
 					bind:focus={passwordFocus}
-					valid={!validPassword ? "Password doesn't meet all requirements" : ''}
+					valid={!validPassword ? $_('password_no_requirements') : ''}
 				/>
 			</div>
-			<label for="password">Confirm password</label>
+			<label for="password">{$_('confirm_password')}</label>
 			<div class="flex">
 				<Input
 					type="password"
 					name="confirmPassword"
 					id="confirmPassword"
 					bind:value={confirmPassword}
-					valid={samePasswords ? '' : 'Passwords dont match'}
+					valid={samePasswords ? '' : $_('password_dont_match')}
 				/>
 			</div>
 			<div class="overflow-hidden">
@@ -151,56 +152,38 @@
 						class:border-green-500={validLength}
 						class:border-red-500={!validLength}
 					>
-						Length
+						{$_('length')}
 					</div>
 					<div
 						class="border-b-2 text-center"
 						class:border-green-500={bigLetter}
 						class:border-red-500={!bigLetter}
 					>
-						Big letter
+						{$_('big_letter')}
 					</div>
 					<div
 						class="border-b-2 text-center"
 						class:border-gren-500={numbers}
 						class:border-red-500={!numbers}
 					>
-						Number
+						{$_('digit')}
 					</div>
 					<div
 						class="border-b-2 text-center"
 						class:border-green-500={specialChars}
 						class:border-red-500={!specialChars}
 					>
-						Special char
+						{$_('special_char')}
 					</div>
 				</div>
 			</div>
 
 			<div>
-				<Button>Change password</Button>
+				<Button>{$_('change_password_action')}</Button>
 			</div>
 			{#if form?.invalidPass}
-				Current password is invalid
+				{$_('invalid_password')}
 			{/if}
 		</form>
 	</div>
 </div>
-
-<!-- <h1 class="text-3xl">Change email</h1> -->
-<!-- {#if !form?.codeSent} -->
-<!-- 	<form action="?/sendEmailChangeCode" method="POST"> -->
-<!-- 		<div><label for="passwordCode">Password</label></div> -->
-<!-- 		<Input id="codePassword" name="codePassword" type="password" required /> -->
-<!-- 		<Button>Send code</Button> -->
-<!-- 	</form> -->
-<!-- {:else} -->
-<!-- 	<form action="?/changeEmail" method="POST"> -->
-<!-- 		<div><label for="changeEmailCode">Code:</label></div> -->
-<!-- 		<Input id="changeEmailCode" name="changeEmailCode" type="text" required /> -->
-<!-- 		<div><label for="newEmail">New Email:</label></div> -->
-<!-- 		<Input id="New Email" name="newEmail" type="text" required /> -->
-<!-- 		<Button>Send code</Button> -->
-<!-- 	</form> -->
-<!-- 	<p>Verification code has been sent to your email</p> -->
-<!-- {/if} -->

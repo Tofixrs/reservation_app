@@ -5,6 +5,7 @@
 	import Account from 'svelte-google-materialdesign-icons/Account_circle.svelte';
 	import Home from 'svelte-google-materialdesign-icons/Home.svelte';
 	import Search from 'svelte-google-materialdesign-icons/Search.svelte';
+	import { _ } from 'svelte-i18n';
 	import { darkMode } from '$lib/client/stores';
 	let { children } = $props();
 	$effect(() => {
@@ -32,7 +33,7 @@
 		<a href="/reservation" class="text-text no-underline">
 			<Search size="36" />
 		</a>
-		<a href="/rooms" class="text-text no-underline">Rooms</a>
+		<a href="/rooms" class="text-text no-underline">{$_('rooms')}</a>
 	</div>
 	<div class="flex justify-end gap-2 md:gap-10">
 		<button onclick={() => darkMode.set(!$darkMode)}>

@@ -85,7 +85,14 @@ export const load: PageServerLoad = async (ev) => {
 		)
 	});
 	if (search.length < roomSizes.length) {
-		return { notEnoughRoomsOfSize: true, search: [], from, until, roomSizes };
+		return {
+			notEnoughRoomsOfSize: true,
+			search: [],
+			from,
+			until,
+			roomSizes,
+			maxPrice: maxPriceNum
+		};
 	}
-	return { search, from, until, roomSizes };
+	return { search, from, until, roomSizes, maxPrice: maxPriceNum };
 };

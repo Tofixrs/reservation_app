@@ -2,7 +2,7 @@
 	import ArrowRight from 'svelte-google-materialdesign-icons/Arrow_right.svelte';
 	import type { PageProps } from './$types';
 	const { data }: PageProps = $props();
-	import { locale } from 'svelte-i18n';
+	import { locale, _ } from 'svelte-i18n';
 	import Input from '$lib/client/components/input.svelte';
 	import Button from '$lib/client/components/button.svelte';
 
@@ -22,7 +22,7 @@
 
 <div class="grid grid-cols-[3fr_1fr] px-50">
 	<div class="px-20">
-		<h1 class="text-3xl">Dodatki</h1>
+		<h1 class="text-3xl">{$_('additions')}</h1>
 		<div>
 			<div
 				class="bg-primary flex justify-between rounded-t-md px-5 py-2 text-white dark:text-black"
@@ -32,9 +32,9 @@
 			</div>
 			<div class="bg-foreground flex items-center justify-end gap-5 rounded-b-md px-5 py-5">
 				<p>{20 * peopleNum * days}zł</p>
-				<Button onclick={() => (additions.food = !additions.food)}
-					>{additions.food ? 'Dodano' : 'Dodaj'}</Button
-				>
+				<Button onclick={() => (additions.food = !additions.food)}>
+					{additions.food ? $_('added') : $_('add')}
+				</Button>
 			</div>
 		</div>
 	</div>
@@ -48,7 +48,7 @@
 						{data.from.getDate()}
 						{data.from.toLocaleDateString($locale ?? 'en-US', { month: 'short' })}
 					</p>
-					<p>From 14:00</p>
+					<p>{$_('from')} 14:00</p>
 				</div>
 				<div class="grid place-items-center">
 					<ArrowRight />
@@ -59,21 +59,21 @@
 						{data.until.getDate()}
 						{data.until.toLocaleDateString($locale ?? 'en-US', { month: 'short' })}
 					</p>
-					<p>To 12:00</p>
+					<p>{$_('to')} 12:00</p>
 				</div>
 			</div>
 			<div>
 				{#each data.rooms as room}
 					<p class="text-sm">{room.roomTypes.name}</p>
-					<p class="text-xs">{room.roomTypes.size} people</p>
+					<p class="text-xs">{room.roomTypes.size} {$_('people')}</p>
 				{/each}
 			</div>
 			<div>
-				<label for="people">People</label>
+				<label for="people">{$_('people')}</label>
 				<Input name="people" bind:value={people} type="number" id="people" min={1} />
 			</div>
 			<p class="text-right">
-				Cena ostateczna: {price}zł
+				{$_('final_price')}: {price}zł
 			</p>
 			<div class="flex justify-end">
 				<form action="/reservation/finish">
@@ -86,7 +86,7 @@
 					<input type="hidden" name="from" value={data.from.getTime()} />
 					<input type="hidden" name="until" value={data.until.getTime()} />
 					<input type="hidden" name="people" value={people} />
-					<Button>Rezerwuj</Button>
+					<Button>{$_('reserve')}</Button>
 				</form>
 			</div>
 		</div>

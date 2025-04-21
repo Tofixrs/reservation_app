@@ -4,6 +4,7 @@
 	import Close from 'svelte-google-materialdesign-icons/Close.svelte';
 	import type { PageProps } from './$types';
 	import { composedGesture, scrollComposition, type RegisterFnType } from 'svelte-gestures';
+	import { _ } from 'svelte-i18n';
 
 	const { data }: PageProps = $props();
 	let rooms: number[] = $state([]);
@@ -63,7 +64,7 @@
 	};
 </script>
 
-<h1 class="text-center text-4xl">Reservation</h1>
+<h1 class="text-center text-4xl">{$_('search_rooms')}</h1>
 <form
 	action="/reservation/search"
 	method="get"
@@ -74,8 +75,8 @@
 >
 	<div></div>
 	<div class="flex flex-wrap items-stretch justify-center gap-10">
-		<div class="bg-foreground flex flex-col rounded-xl px-5 py-2">
-			<label for="from" class="text-center">Arrival</label>
+		<div class="bg-foreground flex flex-col gap-5 rounded-xl px-7 py-5">
+			<label for="from" class="text-center">{$_('arrival')}</label>
 			<Input
 				type="date"
 				name="from"
@@ -84,8 +85,8 @@
 				min={tomorrow.toLocaleDateString('fr-ca')}
 			/>
 		</div>
-		<div class="bg-foreground flex flex-col rounded-xl px-5 py-2">
-			<label for="until" class="text-center">Leave</label>
+		<div class="bg-foreground flex flex-col gap-5 rounded-xl px-7 py-5">
+			<label for="until" class="text-center">{$_('leave')}</label>
 			<Input
 				type="date"
 				name="until"
@@ -97,7 +98,7 @@
 
 		<div class="max-md:relative">
 			<button
-				class="bg-foreground relative flex min-h-[100%] flex-col justify-evenly rounded-xl px-5 py-2"
+				class="bg-foreground relative flex min-h-[100%] flex-col justify-evenly rounded-xl px-7 py-5"
 				type="button"
 				onclick={() => {
 					dropDownOpen = !dropDownOpen;
@@ -105,8 +106,8 @@
 				}}
 			>
 				<div>
-					<p>Rooms: {rooms.length}</p>
-					<p>People: {rooms.reduce((a, b) => a + b, 0)}</p>
+					<p>{$_('rooms')}: {rooms.length}</p>
+					<p>{$_('people')}: {rooms.reduce((a, b) => a + b, 0)}</p>
 				</div>
 			</button>
 			<div
@@ -129,10 +130,10 @@
 						{#each rooms as room, i}
 							<div>
 								<div class="bg-primary p-2" class:rounded-t-xl={i == 0}>
-									<h1 class="text-black">Pokój {i + 1}</h1>
+									<h1 class="text-black">{$_('room')} {i + 1}</h1>
 								</div>
 								<div class="flex justify-between p-2">
-									<span> Osób </span>
+									<span> {$_('people')} </span>
 									<span class="flex items-center gap-5">
 										<Button
 											type="button"
@@ -171,7 +172,7 @@
 							type="button"
 							onclick={() => rooms.push(peopleNum != '' ? Number(peopleNum) : 2)}
 						>
-							Dodaj pokój
+							{$_('add_room')}
 						</Button>
 					</div>
 				</div>
@@ -179,11 +180,11 @@
 		</div>
 	</div>
 	<div class="flex flex-col justify-center">
-		<label for="maxPrice">Max Price:</label>
+		<label for="maxPrice">{$_('max_price')}</label>
 		<Input type="number" name="maxPrice" id="amount" min={0} required={false} />
 	</div>
 	<input type="hidden" value={JSON.stringify(rooms)} name="rooms" />
 	<input type="hidden" name="roomType" value={data.roomType} />
 
-	<Button>Search</Button>
+	<Button>{$_('search')}</Button>
 </form>

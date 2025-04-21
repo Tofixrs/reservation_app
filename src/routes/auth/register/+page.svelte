@@ -3,6 +3,7 @@
 	import AuthButton from '$lib/client/components/authButton.svelte';
 	import Input from '$lib/client/components/input.svelte';
 	import Button from '$lib/client/components/button.svelte';
+	import { _ } from 'svelte-i18n';
 
 	let password = $state('');
 	let passwordFocus = $state(false);
@@ -48,7 +49,7 @@
 				<div class="flex">
 					<Input id="email" name="email" type="email" />
 				</div>
-				<div><label for="email">Password</label></div>
+				<div><label for="email">{$_('password')}</label></div>
 				<div class="flex">
 					<Input
 						id="password"
@@ -56,16 +57,16 @@
 						type="password"
 						bind:value={password}
 						bind:focus={passwordFocus}
-						valid={!validPassword ? "Password doesn't meet all requirements" : ''}
+						valid={!validPassword ? $_('password_no_requirements') : ''}
 					/>
 				</div>
-				<div><label for="email">Confirm password</label></div>
+				<div><label for="email">{$_('confirm_password')}</label></div>
 				<div class="flex">
 					<Input
 						id="confirmPassword"
 						name="confirmPassword"
 						type="password"
-						valid={samePasswords ? '' : 'Passwords dont match'}
+						valid={samePasswords ? '' : $_('password_dont_match')}
 						bind:value={confirmPassword}
 					/>
 				</div>
@@ -80,38 +81,38 @@
 							class:border-green-500={validLength}
 							class:border-red-500={!validLength}
 						>
-							Length
+							{$_('length')}
 						</div>
 						<div
 							class="border-b-2 text-center"
 							class:border-green-500={bigLetter}
 							class:border-red-500={!bigLetter}
 						>
-							Big letter
+							{$_('big_letter')}
 						</div>
 						<div
 							class="border-b-2 text-center"
 							class:border-gren-500={numbers}
 							class:border-red-500={!numbers}
 						>
-							Number
+							{$_('digit')}
 						</div>
 						<div
 							class="border-b-2 text-center"
 							class:border-green-500={specialChars}
 							class:border-red-500={!specialChars}
 						>
-							Special char
+							{$_('special_char')}
 						</div>
 					</div>
 				</div>
 				<div class="text-red-500">
 					{#if form?.alreadyExists}
-						Users with provided email already exists
+						{$_('already_exists')}
 					{/if}
 				</div>
 				<div>
-					<Button>Sign up</Button>
+					<Button>{$_('sign_up')}</Button>
 				</div>
 			</form>
 
@@ -119,7 +120,7 @@
 			<AuthButton url="/auth/google" image="/google.svg" provider="Google" invert={false} />
 			<AuthButton url="/auth/discord" image="/discord-mark-black.svg" provider="Discord" />
 
-			<a href="/auth/login">Sign in instead</a>
+			<a href="/auth/login">{$_('sign_in_instead')}</a>
 		</div>
 	</div>
 </div>
