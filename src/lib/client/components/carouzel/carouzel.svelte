@@ -1,17 +1,18 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { swipe } from 'svelte-gestures';
+	import { composedGesture, panComposition, scrollComposition } from 'svelte-gestures';
 
 	const intervalTime = 10000;
 
 	let content: HTMLDivElement = $state()!;
 	let interval = $state(setInterval(autoChange, intervalTime));
 	const pageNum = $derived(content?.children.length);
+	let totalMovement = $state(0);
 
 	$effect(() => {
 		content.scrollTo({
 			behavior: 'smooth',
-			left: page * content.clientWidth
+			left: page * content.clientWidth + page * 20
 		});
 	});
 
@@ -44,12 +45,34 @@
 
 <div
 	class={`relative flex ${className ?? ''}`}
-	use:swipe={() => ({ timeframe: 300, minSwipeDistance: 10, touchAction: 'pan-y' })}
-	onswipe={(e) => {
-		if (e.detail.direction == 'right') page > 0 && page--;
-		if (e.detail.direction == 'left') page < pageNum && page++;
-
-		resetInterval();
+	use:composedGesture={(r) => {
+		const scrollFns = r(scrollComposition, { delay: 0 });
+		return (evs, ev) => {
+			if (Math.abs(ev.movementX) > Math.abs(ev.movementY)) {
+				content.scroll({ left: content.scrollLeft - ev.movementX });
+				totalMovement -= ev.movementX;
+			} else {
+				//@ts-expect-error: sus
+				scrollFns.onMove(evs, ev);
+			}
+		};
+	}}
+	onpointerup={() => {
+		if (Math.abs(totalMovement) > content.clientWidth / 4) {
+			if (totalMovement > 0) {
+				page++;
+				resetInterval();
+			} else {
+				page--;
+				resetInterval();
+			}
+		} else {
+			content.scrollTo({
+				behavior: 'smooth',
+				left: page * content.clientWidth + page * 20
+			});
+		}
+		totalMovement = 0;
 	}}
 >
 	<div class="absolute flex h-full flex-col justify-center p-5 max-md:hidden">
@@ -58,7 +81,7 @@
 			resetInterval();
 		})}
 	</div>
-	<div class="flex grow overflow-hidden" bind:this={content}>
+	<div class="flex grow gap-[20px] overflow-hidden" bind:this={content}>
 		{@render children()}
 	</div>
 	<div class="absolute right-0 flex h-full flex-col justify-center p-5 max-md:hidden">
