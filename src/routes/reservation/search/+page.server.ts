@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { and, eq, notExists, sql, lte, gte, exists, asc, or } from 'drizzle-orm';
+import { and, eq, notExists, lte, gte, exists, asc } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 import { reservationRooms, reservations, rooms, roomTypes } from '$lib/server/db/schema';
 import { error } from '@sveltejs/kit';

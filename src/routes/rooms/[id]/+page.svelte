@@ -29,12 +29,16 @@
 	}}
 >
 	<button
-		class="border-text hover:border-primary hover:text-primary absolute top-10 left-10 grid h-10 w-10 place-items-center rounded-full border-2 transition-colors"
+		class="dark hover:border-primary hover:text-primary absolute top-10 left-10 grid h-10 w-10 place-items-center rounded-full border-2 border-white text-white transition-colors"
 		onclick={() => (galleryOpened = false)}
 	>
 		<Close />
 	</button>
-	<Carouzel.Root class="max-h-3/4 max-w-1/2" bind:page={galleryPage}>
+	<Carouzel.Root
+		class="max-h-3/4 max-w-9/10 md:max-w-1/2"
+		bind:page={galleryPage}
+		autoscroll={false}
+	>
 		{#each data.room.roomImageKeys as key}
 			<Carouzel.Item>
 				<img

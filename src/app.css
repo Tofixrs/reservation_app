@@ -2,7 +2,11 @@
 @import 'uploadthing/tw/v4';
 @source "../node_modules/@uploadthing/svelte/dist/";
 
-@custom-variant dark (@media (prefers-color-scheme: dark) {&:not(.light *)},&:is(.dark *));
+@custom-variant dark (@media (prefers-color-scheme: dark) {
+		&:not(.light *)
+	}
+
+	, &:is(.dark *));
 
 @theme {
 	--color-text: var(--text);
@@ -24,11 +28,12 @@
 			--accent: #4874db;
 		}
 	}
+
 	@media (prefers-color-scheme: light) {
 		:root {
 			--text: #07271a;
 			--background: #f7fdfa;
-			--foreground: gray;
+			--foreground: lightgray;
 			--primary: #177248;
 			--secondary: #7bb5e5;
 			--accent: #2450b7;
@@ -55,16 +60,19 @@
 	}
 }
 
-.light {
+*.light {
 	--text: #07271a;
 	--background: #f7fdfa;
-	--primary: #177248;
+	--primary: #17b2a8;
 	--secondary: #7bb5e5;
 	--accent: #2450b7;
+	--foreground: lightgray;
 }
-:root.dark {
+
+*.dark {
 	--text: #d9f8eb;
 	--background: #020906;
+	--foreground: #0f0f0f;
 	--primary: #8de8bd;
 	--secondary: #1a5584;
 	--accent: #4874db;

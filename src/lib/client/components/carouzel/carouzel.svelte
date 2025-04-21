@@ -1,11 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { composedGesture, panComposition, scrollComposition } from 'svelte-gestures';
-
-	const intervalTime = 10000;
+	import { composedGesture, scrollComposition } from 'svelte-gestures';
 
 	let content: HTMLDivElement = $state()!;
-	let interval = $state(setInterval(autoChange, intervalTime));
 	const pageNum = $derived(content?.children.length);
 	let totalMovement = $state(0);
 
@@ -20,10 +17,23 @@
 		children: Snippet;
 		class?: string;
 		page?: number;
+		intervalTime?: number;
+		autoscroll?: boolean;
 	};
-	let { children, class: className, page = $bindable(0) }: Props = $props();
+	let {
+		children,
+		class: className,
+		page = $bindable(0),
+		intervalTime = 10000,
+		autoscroll = true
+	}: Props = $props();
+	let interval = $state(setInterval(autoChange, intervalTime));
 
 	function autoChange() {
+		if (!autoscroll) {
+			clearInterval(interval);
+			return;
+		}
 		if (page == pageNum - 1) return (page = 0);
 		page++;
 	}
@@ -48,6 +58,7 @@
 	use:composedGesture={(r) => {
 		const scrollFns = r(scrollComposition, { delay: 0 });
 		return (evs, ev) => {
+			if (ev.pointerType == 'mouse') return;
 			if (Math.abs(ev.movementX) > Math.abs(ev.movementY)) {
 				content.scroll({ left: content.scrollLeft - ev.movementX });
 				totalMovement -= ev.movementX;
