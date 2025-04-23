@@ -48,5 +48,7 @@
 	"continue_with": "Kontynuuj z",
 	"sign_in": "Zaloguj",
 	"sign_up": "Zarejestruj",
-	"wrong_credentials": "Błędne dane logowania"
+	"wrong_credentials": "Błędne dane logowania",
+	"login_data": "Dane logowania",
+	"reservation_history": "Historia rezerwacji"
 }
