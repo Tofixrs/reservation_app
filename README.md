@@ -1,38 +1,26 @@
-# sv
+# Aplikacja rezerwacyjna
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Prosta aplikacja do rezerwacji pokojów w hotelu.
 
-## Creating a project
+# Wymagania
+- PostgreSQL
+- node i npm
 
-If you're seeing this, you've probably already done this step. Congrats!
+# Uruchamianie projektu (do testów)
 
-```bash
-# create a new project in the current directory
-npx sv create
+## Podczas pierwszego uruchamiania
+1. Pobrać wymagane paczki używając komendy:
+    ```bash
+    npm i
+    ```
+2. Wypełnić .env używając .env.example
+3. Zaimportować tabelki do bazy danych:
+    ```bash
+    npm start db:push
+    ```
+    * Dodać przykładowe dane z pliku example_data.sql (opcjonalnie)
+4. Włączyć projekt:
+    ```bash
+    npm start dev
+    ```
 
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
