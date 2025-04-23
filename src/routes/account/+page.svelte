@@ -4,7 +4,7 @@
 	import Button from '$lib/client/components/button.svelte';
 	import Input from '$lib/client/components/input.svelte';
 	import type { PageProps } from './$types';
-	import { _ } from 'svelte-i18n';
+	import { _, locale } from 'svelte-i18n';
 
 	const { form, data }: PageProps = $props();
 	let password = $state('');
@@ -35,38 +35,78 @@
 </script>
 
 <div class="flex flex-col items-center">
-	<div class="min-w-full py-5 lg:min-w-[60%] lg:px-20">
-		<div class="flex justify-between">
-			<div>
-				<span>Email:</span>
-				<span>
-					{data.user.email
-						.split('')
-						.map((v, i) =>
-							i > (1 / 8) * data.user.email.length && i < (2 / 3) * data.user.email.length ? '*' : v
-						)
-						.join('')}
-				</span>
+	<div class="flex min-w-full flex-col gap-5 py-5 lg:min-w-[60%] lg:px-20">
+		<h1 class="text-5xl">{$_('login_data')}</h1>
+		<div>
+			<div class="flex justify-between">
+				<div>
+					<span>Email:</span>
+					<span>
+						{data.user.email
+							.split('')
+							.map((v, i) =>
+								i > (1 / 8) * data.user.email.length && i < (2 / 3) * data.user.email.length
+									? '*'
+									: v
+							)
+							.join('')}
+					</span>
+				</div>
+				<button onclick={() => (emailModalOpen = !emailModalOpen)}><Edit /></button>
 			</div>
-			<button onclick={() => (emailModalOpen = !emailModalOpen)}><Edit /></button>
+			<div class="flex justify-between">
+				<div>
+					<span>{$_('password')}:</span>
+					<span>
+						{Array.from({ length: 8 })
+							.map(() => '*')
+							.join('')}
+					</span>
+				</div>
+				<button onclick={() => (passwordModalOpen = !passwordModalOpen)}><Edit /></button>
+			</div>
 		</div>
-		<div class="flex justify-between">
-			<div>
-				<span>{$_('password')}:</span>
-				<span>
-					{Array.from({ length: 8 })
-						.map(() => '*')
-						.join('')}
-				</span>
-			</div>
-			<button onclick={() => (passwordModalOpen = !passwordModalOpen)}><Edit /></button>
+		<h1 class="text-5xl">{$_('reservation_history')}</h1>
+		<div>
+			<table class="w-full">
+				<thead>
+					<tr>
+						<th></th>
+						<th>{$_('from')}</th>
+						<th>{$_('to')}</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each data.reservations as reservations, i}
+						<tr>
+							<td>{i}</td>
+							<td>
+								{reservations.timeOfArrival.toLocaleDateString($locale ?? 'en-US', {
+									year: 'numeric',
+									month: 'numeric',
+									day: 'numeric'
+								})}
+							</td>
+							<td>
+								{reservations.timeOfLeave.toLocaleDateString($locale ?? 'en-US', {
+									year: 'numeric',
+									month: 'numeric',
+									day: 'numeric'
+								})}
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
 		</div>
-		<hr class="bg-text my-5 h-[1px] border-none" />
-		<form action="?/logout" method="POST">
-			<div>
-				<Button>{$_('sign_out')}</Button>
-			</div>
-		</form>
+		<div>
+			<hr class="bg-text my-5 h-[1px] border-none" />
+			<form action="?/logout" method="POST">
+				<div>
+					<Button>{$_('sign_out')}</Button>
+				</div>
+			</form>
+		</div>
 	</div>
 </div>
 <div
@@ -187,3 +227,43 @@
 		</form>
 	</div>
 </div>
+
+<style>
+	table {
+		--border-radius: var(--radius-xl);
+		border: 1px solid var(--color-text);
+		border-collapse: separate;
+		border-left: 0;
+		border-radius: var(--border-radius);
+		border-spacing: 0px;
+	}
+	thead {
+		display: table-header-group;
+		vertical-align: middle;
+		border-color: inherit;
+		border-collapse: separate;
+	}
+	tr {
+		display: table-row;
+		vertical-align: inherit;
+		border-color: inherit;
+	}
+	th,
+	td {
+		padding: 0.5em 1em;
+		text-align: left;
+		vertical-align: top;
+		border-left: 1px solid var(--color-text);
+	}
+	td {
+		border-top: 1px solid var(--color-text);
+	}
+	thead:first-child tr:first-child th:first-child,
+	tbody:first-child tr:first-child td:first-child {
+		border-radius: var(--border-radius) 0 0 0;
+	}
+	thead:last-child tr:last-child th:first-child,
+	tbody:last-child tr:last-child td:first-child {
+		border-radius: 0 0 0 var(--border-radius);
+	}
+</style>

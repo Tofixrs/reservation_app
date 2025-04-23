@@ -2,8 +2,13 @@ import { error, fail, redirect } from '@sveltejs/kit';
 
 import type { Actions, PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
-import { emailVerification, sessions, users } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import {
+	emailVerification,
+	reservations as reservationsTable,
+	sessions,
+	users
+} from '$lib/server/db/schema';
+import { desc, eq } from 'drizzle-orm';
 import { deleteSessionTokenCookie } from '$lib/server/session';
 import { verify } from '@node-rs/argon2';
 import { hashPassword } from '$lib/server/password';
@@ -20,7 +25,12 @@ export const load: PageServerLoad = async (event) => {
 	}
 	if (!event.locals.user.emailVerified) return redirect(303, '/auth/verify-email');
 
-	return { user: event.locals.user };
+	const reservations = await db.query.reservations.findMany({
+		where: eq(reservationsTable.userId, event.locals.user.id),
+		orderBy: desc(reservationsTable.timeOfArrival)
+	});
+
+	return { user: event.locals.user, reservations };
 };
 
 export const actions: Actions = {
